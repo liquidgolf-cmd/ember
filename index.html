@@ -2,11 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#060c12">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<style>html{background:#060c12;}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Ember</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap');
@@ -17,17 +13,12 @@
   --border:rgba(0,200,230,.15);--border-h:rgba(0,220,255,.35);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html{width:100%;height:100%;min-height:100%;background:#060c12;}
-body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
-  background:#060c12 !important;overflow:hidden;font-family:'Raleway',sans-serif;color:var(--text);
-  -webkit-tap-highlight-color:transparent;}
-:root{background:#060c12;}
+html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-family:'Raleway',sans-serif;color:var(--text);}
 
-.aurora{position:fixed;inset:0;inset:-20px;pointer-events:none;z-index:0;background:#060c12;
+.aurora{position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 90% 55% at 50% 105%,rgba(0,90,130,.22) 0%,transparent 70%),
              radial-gradient(ellipse 50% 40% at 15% 65%,rgba(0,50,90,.14) 0%,transparent 60%),
-             radial-gradient(ellipse 50% 40% at 85% 35%,rgba(0,110,150,.12) 0%,transparent 60%),
-             #060c12;
+             radial-gradient(ellipse 50% 40% at 85% 35%,rgba(0,110,150,.12) 0%,transparent 60%);
   animation:aurora 14s ease-in-out infinite alternate;}
 @keyframes aurora{0%{opacity:.7;transform:scale(1)}100%{opacity:1;transform:scale(1.05) translateY(-8px)}}
 .scanlines{position:fixed;inset:0;pointer-events:none;z-index:1;
@@ -42,42 +33,9 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
   font-size:clamp(22px,3.5vw,32px);letter-spacing:.15em;color:rgba(120,220,240,.5);
   margin-bottom:2.5vh;opacity:0;animation:fadeUp .8s ease .4s forwards;user-select:none;}
 
-/* EYES */
-.eyes{display:flex;gap:clamp(18px,5vw,56px);align-items:center;justify-content:center;}
-.eye-wrap{position:relative;display:flex;align-items:center;justify-content:center;}
-.eye{position:relative;width:clamp(88px,16vw,155px);height:clamp(108px,20vw,190px);cursor:pointer;}
-.eye::after{content:'';position:absolute;inset:-6px;border-radius:45% 45% 50% 50%;
-  border:2px solid rgba(0,220,255,0);transition:border-color .3s,box-shadow .3s;pointer-events:none;}
-.scene.listening .eye::after{border-color:rgba(0,220,255,.5);box-shadow:0 0 20px rgba(0,200,255,.2);}
-.eye-glow-outer{position:absolute;inset:-32%;border-radius:50%;
-  background:radial-gradient(ellipse at center,rgba(0,200,230,.07) 0%,transparent 68%);
-  animation:breathe 4.2s ease-in-out infinite;}
-.eye-orb{position:absolute;inset:0;border-radius:42% 42% 46% 46%;
-  background:radial-gradient(ellipse 68% 58% at 50% 34%,rgba(120,238,255,.16) 0%,transparent 58%),
-             radial-gradient(ellipse at 50% 50%,#0d3d55 0%,#071e2c 58%,#040d14 100%);
-  box-shadow:0 0 28px rgba(0,190,220,.24),0 0 58px rgba(0,150,180,.11),
-             inset 0 0 18px rgba(0,50,80,.8),inset 0 -8px 28px rgba(0,0,0,.6);
-  overflow:hidden;transition:border-radius .35s,box-shadow .4s;}
-.eye-depth{position:absolute;inset:8%;border-radius:40% 40% 44% 44%;
-  background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(0,120,160,.38) 0%,rgba(0,60,90,.28) 40%,transparent 70%);
-  animation:depthPulse 5.5s ease-in-out infinite;}
-.eye-iris{position:absolute;top:15%;left:15%;right:15%;bottom:15%;border-radius:50%;
-  background:conic-gradient(from 0deg,#0a4a6a,#0d7a9a,#0a9ab8,#06b8d8,#0a9ab8,#0d7a9a,#0a4a6a);
-  opacity:.48;animation:irisSpin 20s linear infinite;}
-.eye-pupil{position:absolute;top:28%;left:28%;right:28%;bottom:28%;border-radius:50%;
-  background:radial-gradient(ellipse at 38% 35%,#001520 0%,#000a10 58%,#000508 100%);
-  box-shadow:0 0 14px rgba(0,0,0,.9);transition:transform .14s ease-out;}
-.eye-core{position:absolute;width:28%;height:28%;top:31%;left:36%;border-radius:50%;
-  background:radial-gradient(ellipse at 40% 35%,#e8faff 0%,#7eeeff 28%,#00c8e8 62%,transparent 100%);
-  filter:blur(1px);animation:corePulse 3.6s ease-in-out infinite;transition:width .3s,height .3s,top .3s,left .3s;}
-.eye-spec{position:absolute;width:14%;height:10%;top:18%;left:22%;border-radius:50%;
-  background:rgba(255,255,255,.52);filter:blur(1.5px);transform:rotate(-20deg);}
-.eye-lid-top{position:absolute;top:-2%;left:-2%;right:-2%;height:55%;border-radius:42% 42% 0 0;
-  background:var(--bg);transform-origin:top center;transform:scaleY(0);z-index:10;transition:transform .08s ease-in;}
-.eye-lid-bottom{position:absolute;bottom:-2%;left:-2%;right:-2%;height:55%;border-radius:0 0 46% 46%;
-  background:var(--bg);transform-origin:bottom center;transform:scaleY(0);z-index:10;transition:transform .08s ease-in;}
-.eye-rim{position:absolute;bottom:0;left:5%;right:5%;height:25%;
-  background:linear-gradient(to top,rgba(0,200,230,.11) 0%,transparent 100%);border-radius:0 0 44% 44%;}
+/* EYES — SVG-based, no divs */
+.eyes{display:flex;gap:clamp(24px,6vw,70px);align-items:center;justify-content:center;}
+#emberEyes{cursor:pointer;overflow:visible;width:clamp(260px,48vw,440px);height:clamp(140px,22vw,200px);}
 
 /* STATUS */
 .status-line{margin-top:3.5vh;display:flex;flex-direction:column;align-items:center;gap:6px;min-height:52px;}
@@ -88,7 +46,7 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
 .status-label{font-size:clamp(9px,1.4vw,11px);letter-spacing:.38em;text-transform:uppercase;
   color:var(--text-dim);font-weight:300;opacity:0;animation:fadeUp .6s ease 1.1s forwards;}
 
-/* VOICE ENGINE INDICATOR */
+/* VOICE ENGINE PILL */
 .voice-engine{position:fixed;top:56px;left:50%;transform:translateX(-50%);
   font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-dim);
   padding:3px 12px;border:1px solid var(--border);border-radius:20px;
@@ -121,7 +79,7 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
 .waveform-bar:nth-child(7){animation-delay:.2s;height:10px}
 @keyframes wave{from{transform:scaleY(1)}to{transform:scaleY(.3)}}
 
-/* TRANSCRIPT BUBBLE */
+/* TRANSCRIPT */
 .transcript-bubble{position:fixed;bottom:130px;left:50%;transform:translateX(-50%);
   max-width:min(500px,82vw);background:var(--surface2);border:1px solid var(--border);
   border-radius:14px;padding:12px 16px;font-size:13px;font-weight:300;letter-spacing:.04em;
@@ -159,7 +117,6 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
   color:var(--text-dim);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .panel-close:hover{border-color:var(--border-h);color:var(--accent);}
 .panel-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px;max-height:80vh;overflow-y:auto;}
-
 .field-label{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-dim);font-weight:300;margin-bottom:5px;display:block;}
 .field-note{font-size:10px;color:var(--text-dim);margin-top:-8px;line-height:1.5;}
 .field-input{width:100%;padding:9px 13px;background:rgba(0,30,50,.6);border:1px solid var(--border);
@@ -192,35 +149,27 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
 .listen-text{font-size:11px;letter-spacing:.1em;color:var(--text-dim);font-weight:300;line-height:1.4;}
 .listen-opt.selected .listen-text{color:var(--text-bright);}
 .listen-sub{font-size:10px;color:var(--text-dim);margin-top:2px;}
-
-/* TTS ENGINE CARDS */
 .tts-cards{display:flex;flex-direction:column;gap:8px;}
-.tts-card{padding:12px 14px;border:1px solid var(--border);border-radius:10px;
-  background:rgba(0,20,35,.4);cursor:pointer;transition:all .2s;position:relative;}
+.tts-card{padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:rgba(0,20,35,.4);cursor:pointer;transition:all .2s;}
 .tts-card:hover{border-color:var(--border-h);}
 .tts-card.selected{border-color:rgba(0,240,255,.5);background:rgba(0,60,100,.4);}
-.tts-card.disabled{opacity:.45;cursor:default;}
 .tts-card-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
 .tts-card-dot{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--text-dim);flex-shrink:0;transition:all .2s;}
 .tts-card.selected .tts-card-dot{background:var(--accent);border-color:var(--accent);}
 .tts-card-name{font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:300;color:var(--text-dim);}
 .tts-card.selected .tts-card-name{color:var(--text-bright);}
-.tts-badge{font-size:8px;letter-spacing:.2em;text-transform:uppercase;padding:2px 7px;
-  border-radius:10px;margin-left:auto;font-weight:300;}
+.tts-badge{font-size:8px;letter-spacing:.2em;text-transform:uppercase;padding:2px 7px;border-radius:10px;margin-left:auto;font-weight:300;}
 .tts-badge.active{background:rgba(0,200,120,.15);border:1px solid rgba(0,200,120,.3);color:rgba(100,220,150,.8);}
 .tts-badge.soon{background:rgba(160,80,255,.1);border:1px solid rgba(160,80,255,.25);color:rgba(190,140,255,.7);}
 .tts-badge.fallback{background:rgba(80,120,160,.15);border:1px solid rgba(80,160,200,.2);color:rgba(120,180,220,.6);}
 .tts-card-sub{font-size:10px;color:var(--text-dim);line-height:1.5;padding-left:16px;}
 .tts-card-key{margin-top:8px;padding-left:16px;}
-
 .save-btn{width:100%;padding:10px;border:1px solid rgba(0,220,255,.4);border-radius:10px;
   background:rgba(0,80,120,.5);color:#00f0ff;font-family:'Raleway',sans-serif;
   font-size:11px;letter-spacing:.25em;text-transform:uppercase;cursor:pointer;font-weight:300;transition:all .22s;}
 .save-btn:hover{background:rgba(0,110,160,.6);box-shadow:0 0 20px rgba(0,200,240,.2);}
-
 #settingsPanel{width:min(380px,92vw);top:52px;right:20px;}
 #memoryPanel{width:min(320px,90vw);top:52px;right:58px;}
-
 .memory-entry{padding:10px 12px;background:rgba(0,30,50,.5);border:1px solid var(--border);
   border-radius:8px;font-size:12px;font-weight:300;color:var(--text);line-height:1.5;}
 .mem-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;display:block;}
@@ -242,16 +191,7 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
   border-radius:20px;padding:36px 32px;
   box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 1px rgba(0,200,230,.05);
   display:flex;flex-direction:column;gap:20px;animation:fadeUp .7s ease forwards;}
-.mini-eye-wrap{display:flex;justify-content:center;gap:16px;margin-bottom:4px;}
-.mini-eye{width:44px;height:54px;border-radius:42% 42% 46% 46%;
-  background:radial-gradient(ellipse at 50% 35%,rgba(120,238,255,.18) 0%,transparent 58%),
-             radial-gradient(ellipse at 50% 50%,#0d3d55 0%,#071e2c 58%,#040d14 100%);
-  box-shadow:0 0 24px rgba(0,190,220,.35),0 0 50px rgba(0,150,180,.18);
-  position:relative;overflow:hidden;animation:coreGlow 3s ease-in-out infinite;}
-@keyframes coreGlow{0%,100%{box-shadow:0 0 24px rgba(0,190,220,.35),0 0 50px rgba(0,150,180,.18)}50%{box-shadow:0 0 40px rgba(0,220,255,.55),0 0 80px rgba(0,180,220,.28)}}
-.mini-eye::after{content:'';position:absolute;width:30%;height:30%;top:30%;left:35%;border-radius:50%;
-  background:radial-gradient(ellipse at 40% 35%,#e8faff 0%,#7eeeff 28%,#00c8e8 62%,transparent 100%);
-  filter:blur(1px);animation:corePulse 3s ease-in-out infinite;}
+.mini-eye-preview{display:flex;justify-content:center;margin-bottom:4px;}
 .onboard-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
   font-size:clamp(22px,4vw,28px);color:rgba(180,240,250,.85);letter-spacing:.08em;text-align:center;}
 .onboard-sub{font-size:12px;font-weight:300;letter-spacing:.06em;color:var(--text-dim);text-align:center;line-height:1.65;}
@@ -282,34 +222,9 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
   text-transform:uppercase;color:var(--text-dim);opacity:0;animation:fadeIn .5s ease 3s forwards;
   padding:4px 10px;border:1px solid var(--border);border-radius:20px;background:rgba(0,20,35,.6);}
 
-/* ANIMATIONS */
-@keyframes breathe{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.08);opacity:1}}
-@keyframes depthPulse{0%,100%{opacity:.55}50%{opacity:1}}
-@keyframes irisSpin{to{transform:rotate(360deg)}}
-@keyframes corePulse{0%,100%{transform:scale(1);opacity:.88}50%{transform:scale(1.16);opacity:1}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{to{opacity:1}}
-
-/* STATES */
-.scene.listening .eye-orb{box-shadow:0 0 48px rgba(0,220,255,.5),0 0 96px rgba(0,180,220,.24),inset 0 0 18px rgba(0,80,120,.8);border-radius:44% 44% 48% 48%;}
-.scene.listening .eye-core{animation:coreFast 1s ease-in-out infinite;width:34%;height:34%;top:28%;left:33%;}
-.scene.listening .eye-glow-outer{animation:breatheFast .9s ease-in-out infinite;background:radial-gradient(ellipse at center,rgba(0,220,255,.16) 0%,transparent 68%);}
-@keyframes coreFast{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.28);opacity:.82}}
-@keyframes breatheFast{0%,100%{transform:scale(1)}50%{transform:scale(1.13)}}
-.scene.thinking .eye-iris{animation:irisSpin 5.5s linear infinite;opacity:.82;}
-.scene.thinking .eye-pupil{animation:pupilDrift 2.6s ease-in-out infinite;}
-@keyframes pupilDrift{0%,100%{transform:translate(0,0)}25%{transform:translate(4px,-2px)}75%{transform:translate(-4px,2px)}}
-.scene.speaking .eye-orb{animation:speakBounce .38s ease-in-out infinite alternate;}
-.scene.speaking .eye-core{animation:speakCore .32s ease-in-out infinite alternate;}
-@keyframes speakBounce{from{transform:scaleY(1)}to{transform:scaleY(1.05)}}
-@keyframes speakCore{from{transform:scale(1);opacity:.82}to{transform:scale(1.35);opacity:1}}
-.scene.happy .eye-orb{border-radius:42% 42% 52% 52%;box-shadow:0 0 58px rgba(0,240,255,.54),0 0 110px rgba(0,200,230,.28),inset 0 0 18px rgba(0,80,120,.7);}
-.scene.happy .eye-lid-bottom{transform:scaleY(.38) !important;transition:transform .3s;}
-.scene.surprised .eye-orb{border-radius:50%;box-shadow:0 0 78px rgba(0,240,255,.7),0 0 140px rgba(0,180,220,.4);}
-.scene.surprised .eye-core{width:40%;height:40%;top:25%;left:30%;}
-.eye-wrap.blinking .eye-lid-top{transform:scaleY(1) !important;transition:transform .07s ease-in;}
-.eye-wrap.blinking .eye-lid-bottom{transform:scaleY(.65) !important;transition:transform .07s ease-in;}
 </style>
 </head>
 <body>
@@ -320,7 +235,53 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
 <!-- ONBOARDING -->
 <div id="onboarding">
   <div class="onboard-card">
-    <div class="mini-eye-wrap"><div class="mini-eye"></div><div class="mini-eye"></div></div>
+    <div class="mini-eye-preview">
+      <svg width="120" height="70" viewBox="0 0 120 70" style="overflow:visible">
+        <defs>
+          <radialGradient id="mg1" cx="50%" cy="36%" r="58%">
+            <stop offset="0%" stop-color="#0a3d55" stop-opacity=".9"/>
+            <stop offset="55%" stop-color="#061828"/>
+            <stop offset="100%" stop-color="#020810"/>
+          </radialGradient>
+          <radialGradient id="mc1" cx="38%" cy="34%" r="52%">
+            <stop offset="0%" stop-color="#eafaff"/>
+            <stop offset="22%" stop-color="#7eeeff"/>
+            <stop offset="55%" stop-color="#00b8d8"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+          <radialGradient id="mg2" cx="50%" cy="36%" r="58%">
+            <stop offset="0%" stop-color="#0a3d55" stop-opacity=".9"/>
+            <stop offset="55%" stop-color="#061828"/>
+            <stop offset="100%" stop-color="#020810"/>
+          </radialGradient>
+          <radialGradient id="mc2" cx="38%" cy="34%" r="52%">
+            <stop offset="0%" stop-color="#eafaff"/>
+            <stop offset="22%" stop-color="#7eeeff"/>
+            <stop offset="55%" stop-color="#00b8d8"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+          <filter id="mf"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <clipPath id="mc-l"><ellipse cx="30" cy="35" rx="22" ry="28"/></clipPath>
+          <clipPath id="mc-r"><ellipse cx="90" cy="35" rx="22" ry="28"/></clipPath>
+        </defs>
+        <ellipse cx="30" cy="35" rx="36" ry="40" fill="rgba(0,200,230,.06)"/>
+        <ellipse cx="30" cy="35" rx="22" ry="28" fill="url(#mg1)" stroke="rgba(0,185,215,.3)" stroke-width="1"/>
+        <g clip-path="url(#mc-l)">
+          <ellipse cx="30" cy="35" rx="14" ry="14" fill="none" stroke="rgba(0,145,175,.5)" stroke-width="5" stroke-dasharray="4 3"/>
+          <ellipse cx="30" cy="35" rx="7" ry="7" fill="#010a12"/>
+          <ellipse cx="30" cy="33" rx="5.5" ry="5.5" fill="url(#mc1)" filter="url(#mf)"/>
+          <ellipse cx="23" cy="26" rx="2.5" ry="2" fill="rgba(255,255,255,.5)" transform="rotate(-18,23,26)"/>
+        </g>
+        <ellipse cx="90" cy="35" rx="36" ry="40" fill="rgba(0,200,230,.06)"/>
+        <ellipse cx="90" cy="35" rx="22" ry="28" fill="url(#mg2)" stroke="rgba(0,185,215,.3)" stroke-width="1"/>
+        <g clip-path="url(#mc-r)">
+          <ellipse cx="90" cy="35" rx="14" ry="14" fill="none" stroke="rgba(0,145,175,.5)" stroke-width="5" stroke-dasharray="4 3"/>
+          <ellipse cx="90" cy="35" rx="7" ry="7" fill="#010a12"/>
+          <ellipse cx="90" cy="33" rx="5.5" ry="5.5" fill="url(#mc2)" filter="url(#mf)"/>
+          <ellipse cx="83" cy="26" rx="2.5" ry="2" fill="rgba(255,255,255,.5)" transform="rotate(-18,83,26)"/>
+        </g>
+      </svg>
+    </div>
     <div class="onboard-step active" id="step0">
       <div class="onboard-title">Hello. I'm Ember.</div>
       <div class="onboard-sub">Your AI companion. Let me learn a little about you before we begin.</div>
@@ -337,10 +298,7 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
     <div class="onboard-step" id="step2">
       <div class="onboard-sub">Paste your Anthropic API key so I can think and respond.</div>
       <label class="field-label">Anthropic API key</label>
-      <div class="key-row">
-        <input class="field-input" id="ob-claude-key" type="password" placeholder="sk-ant-api03-…" autocomplete="off">
-        <button class="key-toggle" id="ob-claude-eye" onclick="toggleVis('ob-claude-key','ob-claude-eye')">👁</button>
-      </div>
+      <div class="key-row"><input class="field-input" id="ob-claude-key" type="password" placeholder="sk-ant-api03-…" autocomplete="off"><button class="key-toggle" id="ob-ce" onclick="toggleVis('ob-claude-key','ob-ce')">👁</button></div>
       <div class="field-note">Stored only in your browser. Sent only to Anthropic's API.</div>
       <div class="step-dots"><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div></div>
       <div class="onboard-nav"><button class="onboard-back" onclick="obBack()">←</button><button class="onboard-next" onclick="obNext()">Next →</button></div>
@@ -348,10 +306,7 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
     <div class="onboard-step" id="step3">
       <div class="onboard-sub">Paste your Google TTS API key for a natural voice.</div>
       <label class="field-label">Google Cloud TTS API key</label>
-      <div class="key-row">
-        <input class="field-input" id="ob-google-key" type="password" placeholder="AIza…" autocomplete="off">
-        <button class="key-toggle" id="ob-google-eye" onclick="toggleVis('ob-google-key','ob-google-eye')">👁</button>
-      </div>
+      <div class="key-row"><input class="field-input" id="ob-google-key" type="password" placeholder="AIza…" autocomplete="off"><button class="key-toggle" id="ob-ge" onclick="toggleVis('ob-google-key','ob-ge')">👁</button></div>
       <div class="field-note">Used only for text-to-speech. ElevenLabs can be added later in Settings.</div>
       <div class="step-dots"><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div></div>
       <div class="onboard-nav"><button class="onboard-back" onclick="obBack()">←</button><button class="onboard-next" onclick="obNext()">Next →</button></div>
@@ -397,30 +352,70 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
     <div class="icon-btn" title="Settings" onclick="togglePanel('settingsPanel')">⚙</div>
   </div>
 </div>
-
-<!-- VOICE ENGINE PILL -->
 <div class="voice-engine" id="voiceEnginePill">● Google Neural2</div>
 
 <!-- SCENE -->
 <div class="scene" id="scene">
   <div class="companion-name" id="cName">Ember</div>
-  <div class="eyes">
-    <div class="eye-wrap" id="lEye"><div class="eye" onclick="handleMic()">
-      <div class="eye-glow-outer"></div>
-      <div class="eye-orb"><div class="eye-depth"></div><div class="eye-iris"></div><div class="eye-pupil"></div><div class="eye-core"></div><div class="eye-spec"></div><div class="eye-rim"></div></div>
-      <div class="eye-lid-top"></div><div class="eye-lid-bottom"></div>
-    </div></div>
-    <div class="eye-wrap" id="rEye"><div class="eye" onclick="handleMic()">
-      <div class="eye-glow-outer"></div>
-      <div class="eye-orb"><div class="eye-depth"></div><div class="eye-iris"></div><div class="eye-pupil"></div><div class="eye-core"></div><div class="eye-spec"></div><div class="eye-rim"></div></div>
-      <div class="eye-lid-top"></div><div class="eye-lid-bottom"></div>
-    </div></div>
-  </div>
+
+  <!-- SVG EYES — the whole face is one SVG -->
+  <svg id="emberEyes" viewBox="0 0 320 180" onclick="handleMic()" style="cursor:pointer;overflow:visible;width:clamp(260px,48vw,440px);height:clamp(130px,20vw,180px)">
+    <defs>
+      <radialGradient id="gOrb" cx="50%" cy="36%" r="58%">
+        <stop offset="0%"   stop-color="#0a3d55" stop-opacity=".9"/>
+        <stop offset="55%"  stop-color="#061828"/>
+        <stop offset="100%" stop-color="#020810"/>
+      </radialGradient>
+      <radialGradient id="gCore" cx="38%" cy="34%" r="52%">
+        <stop offset="0%"   stop-color="#eafaff"/>
+        <stop offset="22%"  stop-color="#7eeeff"/>
+        <stop offset="55%"  stop-color="#00b8d8"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+      <radialGradient id="gGlowL" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="#00c8e8" stop-opacity=".2"/>
+        <stop offset="100%" stop-color="#00c8e8" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="gGlowR" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="#00c8e8" stop-opacity=".2"/>
+        <stop offset="100%" stop-color="#00c8e8" stop-opacity="0"/>
+      </radialGradient>
+      <clipPath id="cpL"><path id="cpLp" d=""/></clipPath>
+      <clipPath id="cpR"><path id="cpRp" d=""/></clipPath>
+    </defs>
+
+    <!-- LEFT EYE — cx=88, cy=90 -->
+    <ellipse id="glowL" cx="88" cy="90" rx="68" ry="74" fill="url(#gGlowL)"/>
+    <g clip-path="url(#cpL)">
+      <path id="fillL" d="" fill="url(#gOrb)"/>
+      <g id="pupilGroupL">
+        <ellipse id="irisL" cx="88" cy="90" rx="26" ry="26" fill="none" stroke="rgba(0,145,175,.52)" stroke-width="9" stroke-dasharray="5 4"/>
+        <ellipse id="pupilL" cx="88" cy="90" rx="12" ry="12" fill="#010a12"/>
+        <ellipse id="coreL"  cx="88" cy="87" rx="9"  ry="9"  fill="url(#gCore)"/>
+        <ellipse cx="77" cy="78" rx="4" ry="3" fill="rgba(255,255,255,.5)" transform="rotate(-18,77,78)"/>
+      </g>
+    </g>
+    <path id="rimL" d="" fill="none" stroke="rgba(0,185,215,.28)" stroke-width="1.5"/>
+
+    <!-- RIGHT EYE — cx=232, cy=90 -->
+    <ellipse id="glowR" cx="232" cy="90" rx="68" ry="74" fill="url(#gGlowR)"/>
+    <g clip-path="url(#cpR)">
+      <path id="fillR" d="" fill="url(#gOrb)"/>
+      <g id="pupilGroupR">
+        <ellipse id="irisR" cx="232" cy="90" rx="26" ry="26" fill="none" stroke="rgba(0,145,175,.52)" stroke-width="9" stroke-dasharray="5 4"/>
+        <ellipse id="pupilR" cx="232" cy="90" rx="12" ry="12" fill="#010a12"/>
+        <ellipse id="coreR"  cx="232" cy="87" rx="9"  ry="9"  fill="url(#gCore)"/>
+        <ellipse cx="221" cy="78" rx="4" ry="3" fill="rgba(255,255,255,.5)" transform="rotate(-18,221,78)"/>
+      </g>
+    </g>
+    <path id="rimR" d="" fill="none" stroke="rgba(0,185,215,.28)" stroke-width="1.5"/>
+  </svg>
+
   <div class="status-line">
     <div class="status-greeting" id="sGreet"></div>
     <div class="status-label" id="sLabel">— idle —</div>
   </div>
-  <div class="mic-btn" id="micBtn" onclick="handleMic()" title="Tap to talk · Hold Spacebar">🎙</div>
+  <div class="mic-btn" id="micBtn" onclick="handleMic()" title="Tap to talk · hold Spacebar">🎙</div>
   <div class="waveform" id="wave">
     <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
     <div class="waveform-bar"></div><div class="waveform-bar"></div><div class="waveform-bar"></div>
@@ -439,7 +434,7 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
     <div><label class="field-label">Companion name</label><input class="field-input" id="s-cname" type="text" placeholder="Ember" maxlength="20"></div>
     <div><label class="field-label">Your name</label><input class="field-input" id="s-uname" type="text" placeholder="Your name" maxlength="30"></div>
     <div><label class="field-label">Anthropic API key</label>
-      <div class="key-row"><input class="field-input" id="s-claude-key" type="password" placeholder="sk-ant-…" autocomplete="off"><button class="key-toggle" id="s-claude-eye" onclick="toggleVis('s-claude-key','s-claude-eye')">👁</button></div></div>
+      <div class="key-row"><input class="field-input" id="s-claude-key" type="password" placeholder="sk-ant-…" autocomplete="off"><button class="key-toggle" id="s-ce" onclick="toggleVis('s-claude-key','s-ce')">👁</button></div></div>
     <div><label class="field-label">AI model</label>
       <select class="field-select" id="s-model">
         <option value="claude">Claude (Anthropic)</option>
@@ -449,56 +444,35 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
       </select></div>
     <div><label class="field-label">Voice engine</label>
       <div class="tts-cards" id="s-tts-cards">
-        <!-- Google Neural2 -->
         <div class="tts-card" data-engine="google" onclick="pickTTS(this)">
-          <div class="tts-card-header">
-            <div class="tts-card-dot"></div>
-            <span class="tts-card-name">Google Neural2</span>
-            <span class="tts-badge active">Active</span>
-          </div>
-          <div class="tts-card-sub">Natural, expressive voice. Recommended for daily use.</div>
-          <div class="tts-card-key" id="s-google-key-wrap">
-            <div class="key-row" style="margin-top:6px;">
-              <input class="field-input" id="s-google-key" type="password" placeholder="AIza…" autocomplete="off" style="font-size:11px;padding:7px 10px;">
-              <button class="key-toggle" id="s-google-eye" onclick="event.stopPropagation();toggleVis('s-google-key','s-google-eye')">👁</button>
-            </div>
-          </div>
+          <div class="tts-card-header"><div class="tts-card-dot"></div><span class="tts-card-name">Google Neural2</span><span class="tts-badge active">Active</span></div>
+          <div class="tts-card-sub">Natural, expressive voice.</div>
+          <div class="tts-card-key"><div class="key-row" style="margin-top:6px;">
+            <input class="field-input" id="s-google-key" type="password" placeholder="AIza…" autocomplete="off" style="font-size:11px;padding:7px 10px;">
+            <button class="key-toggle" id="s-ge" onclick="event.stopPropagation();toggleVis('s-google-key','s-ge')">👁</button>
+          </div></div>
         </div>
-        <!-- Google Neural2 voice selector -->
-        <div id="s-google-voice-wrap" style="padding:0 2px;">
+        <div id="s-google-voice-wrap">
           <label class="field-label">Google voice</label>
           <select class="field-select" id="s-google-voice">
             <option value="en-US-Neural2-F">Neural2-F — Warm, clear (recommended)</option>
-            <option value="en-US-Neural2-C">Neural2-C — Fuller, slightly warmer</option>
+            <option value="en-US-Neural2-C">Neural2-C — Fuller, warmer</option>
             <option value="en-US-Neural2-E">Neural2-E — Soft, gentle</option>
             <option value="en-US-Neural2-G">Neural2-G — Bright, expressive</option>
-            <option value="en-US-Studio-O">Studio-O — Broadcast quality (premium)</option>
+            <option value="en-US-Studio-O">Studio-O — Broadcast quality</option>
           </select>
         </div>
-        <!-- ElevenLabs -->
         <div class="tts-card" data-engine="elevenlabs" onclick="pickTTS(this)">
-          <div class="tts-card-header">
-            <div class="tts-card-dot"></div>
-            <span class="tts-card-name">ElevenLabs</span>
-            <span class="tts-badge soon">Production</span>
-          </div>
-          <div class="tts-card-sub">Ultra-realistic emotion. Add your key when ready.</div>
+          <div class="tts-card-header"><div class="tts-card-dot"></div><span class="tts-card-name">ElevenLabs</span><span class="tts-badge soon">Production</span></div>
+          <div class="tts-card-sub">Ultra-realistic emotion. Add key when ready.</div>
           <div class="tts-card-key">
-            <div class="key-row" style="margin-top:6px;">
-              <input class="field-input" id="s-eleven-key" type="password" placeholder="ElevenLabs API key…" autocomplete="off" style="font-size:11px;padding:7px 10px;">
-              <button class="key-toggle" id="s-eleven-eye" onclick="event.stopPropagation();toggleVis('s-eleven-key','s-eleven-eye')">👁</button>
-            </div>
-            <input class="field-input" id="s-eleven-voice" type="text" placeholder="Voice ID (from ElevenLabs dashboard)" autocomplete="off" style="font-size:11px;padding:7px 10px;margin-top:6px;">
+            <div class="key-row" style="margin-top:6px;"><input class="field-input" id="s-eleven-key" type="password" placeholder="ElevenLabs API key…" autocomplete="off" style="font-size:11px;padding:7px 10px;"><button class="key-toggle" id="s-ee" onclick="event.stopPropagation();toggleVis('s-eleven-key','s-ee')">👁</button></div>
+            <input class="field-input" id="s-eleven-voice" type="text" placeholder="Voice ID" autocomplete="off" style="font-size:11px;padding:7px 10px;margin-top:6px;">
           </div>
         </div>
-        <!-- Browser fallback -->
         <div class="tts-card" data-engine="browser" onclick="pickTTS(this)">
-          <div class="tts-card-header">
-            <div class="tts-card-dot"></div>
-            <span class="tts-card-name">Browser TTS</span>
-            <span class="tts-badge fallback">Fallback</span>
-          </div>
-          <div class="tts-card-sub">Built-in. No key needed. Always available.</div>
+          <div class="tts-card-header"><div class="tts-card-dot"></div><span class="tts-card-name">Browser TTS</span><span class="tts-badge fallback">Fallback</span></div>
+          <div class="tts-card-sub">Built-in. No key needed.</div>
         </div>
       </div>
     </div>
@@ -511,14 +485,8 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
       </div></div>
     <div><label class="field-label">Listen mode</label>
       <div class="listen-modes" id="s-modes">
-        <div class="listen-opt" data-mode="tap" onclick="pickMode(this,'s-modes')">
-          <div class="listen-dot"></div>
-          <div><div class="listen-text">Tap / Spacebar</div><div class="listen-sub">Click eyes or hold spacebar</div></div>
-        </div>
-        <div class="listen-opt" data-mode="always" onclick="pickMode(this,'s-modes')">
-          <div class="listen-dot"></div>
-          <div><div class="listen-text">Always listening</div><div class="listen-sub">Auto-detects your voice</div></div>
-        </div>
+        <div class="listen-opt" data-mode="tap" onclick="pickMode(this,'s-modes')"><div class="listen-dot"></div><div><div class="listen-text">Tap / Spacebar</div><div class="listen-sub">Click eyes or hold spacebar</div></div></div>
+        <div class="listen-opt" data-mode="always" onclick="pickMode(this,'s-modes')"><div class="listen-dot"></div><div><div class="listen-text">Always listening</div><div class="listen-sub">Auto-detects your voice</div></div></div>
       </div></div>
     <button class="save-btn" onclick="saveSettings()">Save changes</button>
   </div>
@@ -531,30 +499,237 @@ body{width:100%;height:100%;min-height:100vh;min-height:-webkit-fill-available;
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // STORAGE
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 const SK='ember_v3';
-const DEF={
-  userName:'',companionName:'Ember',model:'claude',tone:'warm',listenMode:'tap',
-  claudeKey:'',googleKey:'',googleVoice:'en-US-Neural2-F',
-  elevenKey:'',elevenVoiceId:'',ttsEngine:'google',
-  topics:[],onboarded:false,visitCount:0,lastVisit:null,history:[]
-};
+const DEF={userName:'',companionName:'Ember',model:'claude',tone:'warm',listenMode:'tap',
+  claudeKey:'',googleKey:'',googleVoice:'en-US-Neural2-F',elevenKey:'',elevenVoiceId:'',
+  ttsEngine:'google',topics:[],onboarded:false,visitCount:0,lastVisit:null,history:[]};
 function loadP(){try{const r=localStorage.getItem(SK);return r?{...DEF,...JSON.parse(r)}:{...DEF};}catch{return{...DEF};}}
 function saveP(){localStorage.setItem(SK,JSON.stringify(P));}
 let P=loadP();
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// SVG EYE MORPH SYSTEM
+// ═══════════════════════════════════════════════════════
+const EYES=[
+  {cx:88,  cy:90, fill:'fillL',rim:'rimL',cpEl:'cpLp',iris:'irisL',pupil:'pupilL',core:'coreL',glow:'glowL'},
+  {cx:232, cy:90, fill:'fillR',rim:'rimR',cpEl:'cpRp',iris:'irisR',pupil:'pupilR',core:'coreR',glow:'glowR'},
+];
+
+// Generate eye path from state parameters — all shapes close smoothly
+function eyePath(cx,cy,state){
+  const S={
+    idle:      {t:cy-50,b:cy+50,hw:40, tc:cy-18,bc:cy+18, happyBot:false},
+    listening: {t:cy-58,b:cy+58,hw:46, tc:cy-22,bc:cy+22, happyBot:false},
+    thinking:  {t:cy-36,b:cy+48,hw:38, tc:cy-12,bc:cy+20, happyBot:false},
+    speaking:  {t:cy-46,b:cy+46,hw:40, tc:cy-16,bc:cy+16, happyBot:false},
+    surprised: {t:cy-62,b:cy+62,hw:52, tc:cy-26,bc:cy+26, happyBot:false},
+    happy:     {t:cy-50,b:cy+16,hw:44, tc:cy-20,bc:cy+32, happyBot:true},
+    blink:     {t:cy-3, b:cy+3, hw:40, tc:cy,   bc:cy,    happyBot:false},
+  };
+  const p=S[state]||S.idle;
+  const l=cx-p.hw, r=cx+p.hw;
+  if(p.happyBot){
+    // Bottom curves upward — crescent/happy shape
+    return `M${cx},${p.t} C${r},${p.t} ${r},${p.tc} ${r},${cy} C${r},${p.bc} ${cx+16},${p.b} ${cx},${p.b} C${cx-16},${p.b} ${l},${p.bc} ${l},${cy} C${l},${p.tc} ${l},${p.t} ${cx},${p.t}Z`;
+  }
+  return `M${cx},${p.t} C${r},${p.t} ${r},${p.tc} ${r},${cy} C${r},${p.bc} ${r},${p.b} ${cx},${p.b} C${l},${p.b} ${l},${p.bc} ${l},${cy} C${l},${p.tc} ${l},${p.t} ${cx},${p.t}Z`;
+}
+
+const eyeSizes={
+  idle:      {iris:26,pupil:12,core:9, glowRx:68,glowRy:74,cyOff:0},
+  listening: {iris:30,pupil:16,core:12,glowRx:78,glowRy:84,cyOff:0},
+  thinking:  {iris:23,pupil:10,core:8, glowRx:60,glowRy:66,cyOff:5},
+  speaking:  {iris:25,pupil:12,core:9, glowRx:65,glowRy:70,cyOff:0},
+  surprised: {iris:34,pupil:21,core:15,glowRx:82,glowRy:90,cyOff:0},
+  happy:     {iris:21,pupil:10,core:8, glowRx:68,glowRy:58,cyOff:-6},
+  blink:     {iris:3, pupil:2, core:2, glowRx:68,glowRy:22,cyOff:0},
+};
+
+function lerpN(a,b,t){return a+(b-a)*t;}
+function lerpPath(a,b,t){
+  const na=a.match(/-?[\d.]+/g).map(Number);
+  const nb=b.match(/-?[\d.]+/g).map(Number);
+  const tpl=a.replace(/-?[\d.]+/g,'§').split('§');
+  return tpl.reduce((s,p,i)=>s+p+(i<na.length?(na[i]+(nb[i]-na[i])*t).toFixed(2):''),'');
+}
+function easeIn(t){return t*t*t;}
+function easeOut(t){return 1-Math.pow(1-t,3);}
+function easeIO(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
+
+function applyEye(eye,toState,t,fromState){
+  const toPath=eyePath(eye.cx,eye.cy,toState);
+  const fromPath=eyePath(eye.cx,eye.cy,fromState||toState);
+  const path=t>=1?toPath:lerpPath(fromPath,toPath,t);
+  const toSz=eyeSizes[toState]||eyeSizes.idle;
+  const fromSz=eyeSizes[fromState||toState]||eyeSizes.idle;
+  const iris=lerpN(fromSz.iris,toSz.iris,t);
+  const pupil=lerpN(fromSz.pupil,toSz.pupil,t);
+  const core=lerpN(fromSz.core,toSz.core,t);
+  const glowRx=lerpN(fromSz.glowRx,toSz.glowRx,t);
+  const glowRy=lerpN(fromSz.glowRy,toSz.glowRy,t);
+  const cyOff=lerpN(fromSz.cyOff,toSz.cyOff,t);
+
+  document.getElementById(eye.fill).setAttribute('d',path);
+  document.getElementById(eye.rim).setAttribute('d',path);
+  document.getElementById(eye.cpEl).setAttribute('d',path);
+  document.getElementById(eye.glow).setAttribute('rx',glowRx);
+  document.getElementById(eye.glow).setAttribute('ry',glowRy);
+
+  const irisEl=document.getElementById(eye.iris);
+  const irisRy=toState==='happy'?iris*.6:iris;
+  irisEl.setAttribute('rx',iris); irisEl.setAttribute('ry',irisRy);
+  irisEl.setAttribute('cy',eye.cy+cyOff);
+
+  const pupilEl=document.getElementById(eye.pupil);
+  const pupilRy=toState==='happy'?pupil*.65:pupil;
+  pupilEl.setAttribute('rx',pupil); pupilEl.setAttribute('ry',pupilRy);
+  pupilEl.setAttribute('cy',eye.cy+cyOff);
+
+  const coreEl=document.getElementById(eye.core);
+  const coreRy=toState==='happy'?core*.65:core;
+  coreEl.setAttribute('rx',core); coreEl.setAttribute('ry',coreRy);
+  coreEl.setAttribute('cy',eye.cy-3+cyOff);
+}
+
+let morphAnim=null, morphFrom='idle', morphCur='idle';
+
+function morphTo(toState,dur,easeFn,cb){
+  if(morphAnim)cancelAnimationFrame(morphAnim);
+  const from=morphCur;
+  const start=performance.now();
+  function frame(now){
+    const raw=Math.min((now-start)/dur,1);
+    const t=easeFn(raw);
+    EYES.forEach(e=>applyEye(e,toState,t,from));
+    if(raw<1){morphAnim=requestAnimationFrame(frame);}
+    else{morphCur=toState;if(cb)cb();}
+  }
+  morphAnim=requestAnimationFrame(frame);
+}
+
+function doBlink(){
+  if(['surprised'].includes(morphCur))return;
+  const prev=morphCur;
+  morphTo('blink',70,easeIn,()=>{
+    setTimeout(()=>morphTo(prev,140,easeOut),28);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// BREATHING PULSE — idle glow breathe
+// ═══════════════════════════════════════════════════════
+let breathPhase=0;
+function breathe(){
+  breathPhase+=0.018;
+  if(morphCur==='idle'){
+    const s=0.96+Math.sin(breathPhase)*0.04;
+    EYES.forEach(e=>{
+      const g=document.getElementById(e.glow);
+      g.setAttribute('rx',68*s); g.setAttribute('ry',74*s);
+    });
+  }
+  requestAnimationFrame(breathe);
+}
+requestAnimationFrame(breathe);
+
+// ═══════════════════════════════════════════════════════
+// SPEAKING PULSE — eyes squeeze slightly with speech rhythm
+// ═══════════════════════════════════════════════════════
+let speakPhase=0;
+function speakPulse(){
+  if(morphCur==='speaking'){
+    speakPhase+=0.11;
+    const sq=1+Math.sin(speakPhase)*0.03;
+    document.getElementById('emberEyes').style.transform=`scaleY(${sq})`;
+  } else {
+    document.getElementById('emberEyes').style.transform='';
+    speakPhase=0;
+  }
+  requestAnimationFrame(speakPulse);
+}
+requestAnimationFrame(speakPulse);
+
+// ═══════════════════════════════════════════════════════
+// PUPIL TRACKING
+// Moves a <g> wrapper via transform translate — never
+// touches cx/cy so it doesn't fight the morph system.
+// Clamped to a small radius so pupils stay inside the eye.
+// ═══════════════════════════════════════════════════════
+document.addEventListener('mousemove',e=>trackPupils(e.clientX,e.clientY));
+document.addEventListener('touchmove',e=>trackPupils(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
+
+// Target offsets — smoothly interpolated each frame
+const pupilTarget={L:{x:0,y:0}, R:{x:0,y:0}};
+const pupilCurrent={L:{x:0,y:0}, R:{x:0,y:0}};
+
+function trackPupils(mx,my){
+  if(['thinking','blink'].includes(morphCur)) return;
+  const svgEl=document.getElementById('emberEyes');
+  const rect=svgEl.getBoundingClientRect();
+  // Convert screen coords to SVG viewBox coords
+  const scaleX=320/rect.width, scaleY=180/rect.height;
+  const svgX=(mx-rect.left)*scaleX, svgY=(my-rect.top)*scaleY;
+
+  EYES.forEach((eye,i)=>{
+    const key=i===0?'L':'R';
+    const dx=svgX-eye.cx, dy=svgY-eye.cy;
+    const angle=Math.atan2(dy,dx);
+    // Max travel: 4px horizontal, 3px vertical — tight clamp keeps them inside
+    const maxX=4, maxY=3;
+    const dist=Math.sqrt(dx*dx+dy*dy)||1;
+    const scale=Math.min(dist/120,1);
+    pupilTarget[key].x=Math.cos(angle)*maxX*scale;
+    pupilTarget[key].y=Math.sin(angle)*maxY*scale;
+  });
+}
+
+// Smooth lerp loop — runs every frame, eases current toward target
+(function pupilLerp(){
+  ['L','R'].forEach((k,i)=>{
+    const eye=EYES[i];
+    const cur=pupilCurrent[k], tgt=pupilTarget[k];
+    cur.x+=(tgt.x-cur.x)*0.12;
+    cur.y+=(tgt.y-cur.y)*0.12;
+    // Apply to the inner content group for this eye
+    const grp=document.getElementById('pupilGroup'+k);
+    if(grp) grp.setAttribute('transform',`translate(${cur.x.toFixed(2)},${cur.y.toFixed(2)})`);
+  });
+  requestAnimationFrame(pupilLerp);
+})();
+
+// ═══════════════════════════════════════════════════════
+// DECLARATIONS
+// ═══════════════════════════════════════════════════════
+const ML={claude:'Claude',gpt4o:'GPT-4o',grok:'Grok',gemini:'Gemini'};
+const scene=document.getElementById('scene');
+const sLabel=document.getElementById('sLabel'), sGreet=document.getElementById('sGreet');
+const SL={idle:'— idle —',listening:'listening...',thinking:'processing...',speaking:'speaking',happy:'^ _ ^',surprised:'! ! !'};
+let curState='idle', gTimer=null;
+let recog=null, isListening=false, alwaysOn=false, spaceDown=false, audioCtx=null, curSource=null;
+const micBtn=document.getElementById('micBtn');
+
+// ═══════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════
+// Draw idle eyes immediately
+EYES.forEach(e=>applyEye(e,'idle',1,'idle'));
+morphCur='idle';
+
+if(P.onboarded){P.visitCount=(P.visitCount||0)+1;P.lastVisit=new Date().toISOString();saveP();
+  document.getElementById('onboarding').classList.add('hidden');initMain();}
+
+// ═══════════════════════════════════════════════════════
 // ONBOARDING
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 let obStep=0;
 function obNext(){
   if(obStep===1){const n=document.getElementById('ob-name').value.trim();if(!n){document.getElementById('ob-name').focus();return;}P.userName=n;}
   if(obStep===2){P.claudeKey=document.getElementById('ob-claude-key').value.trim();}
   if(obStep===3){P.googleKey=document.getElementById('ob-google-key').value.trim();}
-  obStep++;
-  document.querySelectorAll('.onboard-step').forEach((el,i)=>el.classList.toggle('active',i===obStep));
+  obStep++;document.querySelectorAll('.onboard-step').forEach((el,i)=>el.classList.toggle('active',i===obStep));
 }
 function obBack(){obStep--;document.querySelectorAll('.onboard-step').forEach((el,i)=>el.classList.toggle('active',i===obStep));}
 function finishOB(){
@@ -567,38 +742,14 @@ function finishOB(){
 function pickTone(btn,grid){document.querySelectorAll('#'+grid+' .tone-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
 function pickMode(btn,grid){document.querySelectorAll('#'+grid+' .listen-opt').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
 function pickTTS(card){
-  document.querySelectorAll('#s-tts-cards .tts-card').forEach(c=>c.classList.remove('selected'));
-  card.classList.add('selected');
-  // show/hide google voice selector
-  const eng=card.dataset.engine;
-  document.getElementById('s-google-voice-wrap').style.display=eng==='google'?'block':'none';
+  document.querySelectorAll('#s-tts-cards .tts-card').forEach(c=>c.classList.remove('selected'));card.classList.add('selected');
+  document.getElementById('s-google-voice-wrap').style.display=card.dataset.engine==='google'?'block':'none';
 }
 function toggleVis(id,btnId){const i=document.getElementById(id),b=document.getElementById(btnId);i.type=i.type==='password'?'text':'password';b.classList.toggle('on');}
 
-// ═══════════════════════════════════════════════
-// ALL DECLARATIONS — must come before any initMain() call
-// ═══════════════════════════════════════════════
-const ML={claude:'Claude',gpt4o:'GPT-4o',grok:'Grok',gemini:'Gemini'};
-
-const scene=document.getElementById('scene');
-const sLabel=document.getElementById('sLabel'),sGreet=document.getElementById('sGreet');
-const SL={idle:'— idle —',listening:'listening...',thinking:'processing...',speaking:'speaking',happy:'^ _ ^',surprised:'! ! !'};
-let curState='idle';
-
-let recog=null,isListening=false,alwaysOn=false,spaceDown=false,audioCtx=null,curSource=null;
-const micBtn=document.getElementById('micBtn');
-
-let gTimer=null;
-
-// ═══════════════════════════════════════════════
-// BOOT — now safe to call initMain
-// ═══════════════════════════════════════════════
-if(P.onboarded){P.visitCount=(P.visitCount||0)+1;P.lastVisit=new Date().toISOString();saveP();
-  document.getElementById('onboarding').classList.add('hidden');initMain();}
-
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function initMain(){updateUI();populateSettings();renderMem();renderChips();buildPts();startBlink();playGreet();initMicMode();updateEnginePill();}
 
 function updateUI(){
@@ -609,10 +760,6 @@ function updateUI(){
   document.getElementById('modelBadge').textContent=ML[P.model]||'Claude';
 }
 function cycleModel(){const ms=Object.keys(ML);P.model=ms[(ms.indexOf(P.model)+1)%ms.length];saveP();updateUI();flash(`Switched to ${ML[P.model]}`);}
-
-// ═══════════════════════════════════════════════
-// VOICE ENGINE PILL
-// ═══════════════════════════════════════════════
 function updateEnginePill(){
   const pill=document.getElementById('voiceEnginePill');
   const labels={google:'● Google Neural2',elevenlabs:'● ElevenLabs',browser:'● Browser TTS'};
@@ -620,13 +767,25 @@ function updateEnginePill(){
   pill.className='voice-engine '+P.ttsEngine;
 }
 
-// ═══════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════
-function setState(s){scene.classList.remove(...Object.keys(SL));curState=s;scene.classList.add(s);sLabel.textContent=SL[s]||s;}
-function flash(msg,dur=2800){sGreet.textContent=msg;clearTimeout(gTimer);gTimer=setTimeout(()=>{if(sGreet.textContent===msg)sGreet.textContent='';},dur);}
-
-function setState(s){scene.classList.remove(...Object.keys(SL));curState=s;scene.classList.add(s);sLabel.textContent=SL[s]||s;}
+// ═══════════════════════════════════════════════════════
+// STATE — drives both UI class and eye morph
+// ═══════════════════════════════════════════════════════
+function setState(s){
+  scene.classList.remove(...Object.keys(SL));curState=s;scene.classList.add(s);
+  sLabel.textContent=SL[s]||s;
+  const dur=s==='happy'?320:s==='surprised'?240:260;
+  const ease=s==='happy'?easeOut:easeIO;
+  morphTo(s,dur,ease);
+  // Reset pupils to center on thinking (eyes look inward)
+  if(s==='thinking'||s==='blink'){
+    pupilTarget.L.x=0;pupilTarget.L.y=0;
+    pupilTarget.R.x=0;pupilTarget.R.y=0;
+  }
+}
+function flash(msg,dur=2800){
+  sGreet.textContent=msg;clearTimeout(gTimer);
+  gTimer=setTimeout(()=>{if(sGreet.textContent===msg)sGreet.textContent='';},dur);
+}
 function playGreet(){
   const n=P.userName||'there',h=new Date().getHours();
   const tg=h<12?'Good morning':h<17?'Good afternoon':'Good evening';const c=P.visitCount||1;
@@ -637,28 +796,24 @@ function playGreet(){
   setTimeout(()=>{setState('happy');flash(g[P.tone]||g.warm,2500);setTimeout(()=>setState('idle'),2300);},700);
 }
 
-// ═══════════════════════════════════════════════
-// BLINK & PUPILS
-// ═══════════════════════════════════════════════
-function blink(el){el.classList.add('blinking');setTimeout(()=>el.classList.remove('blinking'),155);}
+// ═══════════════════════════════════════════════════════
+// BLINK SCHEDULER
+// ═══════════════════════════════════════════════════════
 function startBlink(){
-  const L=document.getElementById('lEye'),R=document.getElementById('rEye');
-  (function loop(){setTimeout(()=>{if(curState!=='surprised'){blink(L);setTimeout(()=>blink(R),55+Math.random()*80);}loop();},2200+Math.random()*5500);})();
+  (function loop(){
+    setTimeout(()=>{
+      if(!['surprised','blink'].includes(morphCur)){
+        doBlink();
+        if(Math.random()<0.2)setTimeout(doBlink,300+Math.random()*100);
+      }
+      loop();
+    },2800+Math.random()*4200);
+  })();
 }
-function trackPupils(cx,cy){
-  if(curState==='thinking')return;
-  document.querySelectorAll('.eye-wrap').forEach(w=>{
-    const r=w.getBoundingClientRect(),dx=cx-(r.left+r.width/2),dy=cy-(r.top+r.height/2);
-    const d=Math.sqrt(dx*dx+dy*dy)||1,sc=Math.min(d/200,1);
-    w.querySelector('.eye-pupil').style.transform=`translate(${dx/d*6*sc}px,${dy/d*6*sc}px)`;
-  });
-}
-document.addEventListener('mousemove',e=>trackPupils(e.clientX,e.clientY));
-document.addEventListener('touchmove',e=>trackPupils(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // VOICE INPUT
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function initMicMode(){
   if(P.listenMode==='always'){micBtn.textContent='🟢';micBtn.classList.add('always-on');micBtn.title='Always listening · tap to pause';startAlways();}
   else{micBtn.textContent='🎙';micBtn.classList.remove('always-on');micBtn.title='Tap to talk · hold Spacebar';}
@@ -678,17 +833,13 @@ function startListen(){
   recog.onresult=e=>{const t=Array.from(e.results).map(r=>r[0].transcript).join('');showBubble(t);if(e.results[e.results.length-1].isFinal)handleText(t);};
   recog.onerror=err=>{
     isListening=false;setState('idle');showWave(false);micBtn.classList.remove('active');
-    const micErrors={
-      'not-allowed':'Mic blocked — allow microphone in your browser settings, then reload.',
-      'permission-denied':'Mic permission denied — check site settings and allow microphone.',
+    const errs={'not-allowed':'Mic blocked — allow microphone in browser settings, then reload.',
+      'permission-denied':'Mic permission denied — check site settings.',
       'no-speech':'No speech detected — try again.',
       'audio-capture':'No microphone found — check your device.',
       'network':'Network error during speech recognition.',
-      'service-not-allowed':'Speech service blocked — must be on https:// or localhost.',
-      'aborted':null
-    };
-    const msg=micErrors[err.error];
-    if(msg)flash(msg, 4000);
+      'service-not-allowed':'Speech service blocked — must be on https:// or localhost.','aborted':null};
+    const msg=errs[err.error];if(msg)flash(msg,4000);
   };
   recog.onend=()=>{isListening=false;micBtn.classList.remove('active');showWave(false);if(curState==='listening')setState('idle');};
   recog.start();
@@ -702,13 +853,9 @@ function startAlways(){
     if(!alwaysOn)return;
     recog=new SR();recog.lang='en-US';recog.continuous=false;recog.interimResults=true;
     recog.onresult=e=>{const t=Array.from(e.results).map(r=>r[0].transcript).join('');showBubble(t);setState('listening');showWave(true);if(e.results[e.results.length-1].isFinal)handleText(t);};
-    recog.onend=()=>{if(alwaysOn&&curState!=='thinking'&&curState!=='speaking')setTimeout(loop,400);};
+    recog.onend=()=>{if(alwaysOn&&!['thinking','speaking'].includes(curState))setTimeout(loop,400);};
     recog.onerror=e=>{
-      if(e.error==='not-allowed'||e.error==='permission-denied'){
-        alwaysOn=false;micBtn.classList.remove('active');
-        flash('Mic blocked — allow microphone in browser settings, then reload.',4000);
-        return;
-      }
+      if(e.error==='not-allowed'||e.error==='permission-denied'){alwaysOn=false;micBtn.classList.remove('active');flash('Mic blocked — allow microphone in browser settings, then reload.',4000);return;}
       if(alwaysOn)setTimeout(loop,800);
     };
     recog.start();
@@ -730,97 +877,62 @@ async function handleText(text){
   await speakText(reply);
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // CLAUDE
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 async function callClaude(userText){
   const key=P.claudeKey?.trim();
   if(!key){flash('No Claude key — add it in Settings ⚙');setState('idle');return null;}
-  const toneMap={
-    warm:'Be warm, encouraging, conversational. Under 35 words — voice output.',
-    calm:'Be calm and focused. 2 sentences max for voice.',
-    direct:'Be direct. One sentence max. No filler.',
-    playful:'Be playful and light. Short, fun. Max 2 sentences.'
-  };
+  const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words — voice output.',
+    calm:'Be calm and focused. 2 sentences max for voice.',direct:'Be direct. One sentence max. No filler.',
+    playful:'Be playful and light. Short, fun. Max 2 sentences.'};
   const sys=`You are Ember, a warm AI companion. User's name: ${P.userName||'there'}.
 ${toneMap[P.tone]||toneMap.warm}
 Speaking aloud via TTS — no markdown, lists, asterisks, or any formatting.
 Keep responses under 40 words unless the user asks for more.`;
   const msgs=[...(P.history||[]).slice(-10).slice(0,-1),{role:'user',content:userText}];
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:sys,messages:msgs})
-    });
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:sys,messages:msgs})});
     if(!res.ok){const e=await res.json().catch(()=>({}));flash((e?.error?.message||`Error ${res.status}`).slice(0,90));setState('idle');return null;}
     const d=await res.json();return d.content?.[0]?.text||null;
   }catch{flash('Connection error — check your Claude key.');setState('idle');return null;}
 }
 
-// ═══════════════════════════════════════════════
-// TTS ENGINE STACK
-// Priority: ElevenLabs → Google Neural2 → Browser
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// TTS STACK: ElevenLabs → Google Neural2 → Browser
+// ═══════════════════════════════════════════════════════
 async function speakText(text){
   const engine=P.ttsEngine||'google';
   if(engine==='elevenlabs'&&P.elevenKey?.trim()&&P.elevenVoiceId?.trim()){
-    const ok=await speakElevenLabs(text);if(ok)return;
-    flash('ElevenLabs failed — falling back to Google…',1800);
-  }
+    const ok=await speakElevenLabs(text);if(ok)return;flash('ElevenLabs failed — falling back…',1800);}
   if((engine==='google'||engine==='elevenlabs')&&P.googleKey?.trim()){
-    const ok=await speakGoogle(text);if(ok)return;
-    flash('Google TTS failed — using browser voice…',1800);
-  }
+    const ok=await speakGoogle(text);if(ok)return;flash('Google TTS failed — using browser…',1800);}
   speakBrowser(text);
 }
-
-// ── GOOGLE NEURAL2 ──────────────────────────────
 async function speakGoogle(text){
   try{
-    const voice=P.googleVoice||'en-US-Neural2-F';
-    // Studio voices need different audioConfig
-    const isStudio=voice.includes('Studio');
-    const body={
-      input:{text},
-      voice:{languageCode:'en-US',name:voice},
-      audioConfig:{audioEncoding:'MP3',speakingRate:0.93,pitch:1.5,volumeGainDb:0}
-    };
-    const res=await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${P.googleKey.trim()}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)
-    });
-    if(!res.ok){const e=await res.json().catch(()=>({}));console.warn('Google TTS error:',e);return false;}
-    const data=await res.json();
-    if(!data.audioContent)return false;
-    await playBase64Audio(data.audioContent);
-    return true;
-  }catch(e){console.warn('Google TTS exception:',e);return false;}
+    const body={input:{text},voice:{languageCode:'en-US',name:P.googleVoice||'en-US-Neural2-F'},
+      audioConfig:{audioEncoding:'MP3',speakingRate:0.93,pitch:1.5,volumeGainDb:0}};
+    const res=await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${P.googleKey.trim()}`,
+      {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok)return false;
+    const data=await res.json();if(!data.audioContent)return false;
+    await playBase64Audio(data.audioContent);return true;
+  }catch(e){console.warn('Google TTS:',e);return false;}
 }
-
-// ── ELEVENLABS ──────────────────────────────────
 async function speakElevenLabs(text){
   try{
-    const res=await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${P.elevenVoiceId.trim()}`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','xi-api-key':P.elevenKey.trim()},
-      body:JSON.stringify({text,model_id:'eleven_multilingual_v2',
-        voice_settings:{stability:0.5,similarity_boost:0.75,style:0.35,use_speaker_boost:true}})
-    });
+    const res=await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${P.elevenVoiceId.trim()}`,
+      {method:'POST',headers:{'Content-Type':'application/json','xi-api-key':P.elevenKey.trim()},
+       body:JSON.stringify({text,model_id:'eleven_multilingual_v2',voice_settings:{stability:.5,similarity_boost:.75,style:.35,use_speaker_boost:true}})});
     if(!res.ok)return false;
-    const blob=await res.blob();
-    const url=URL.createObjectURL(blob);
-    await playAudioUrl(url);
-    URL.revokeObjectURL(url);
-    return true;
-  }catch(e){console.warn('ElevenLabs exception:',e);return false;}
+    const blob=await res.blob();const url=URL.createObjectURL(blob);
+    await playAudioUrl(url);URL.revokeObjectURL(url);return true;
+  }catch(e){console.warn('ElevenLabs:',e);return false;}
 }
-
-// ── AUDIO PLAYBACK ──────────────────────────────
-function stopAudio(){
-  if(curSource){try{curSource.stop();}catch{}curSource=null;}
-  window.speechSynthesis?.cancel();
-}
-
+function stopAudio(){if(curSource){try{curSource.stop();}catch{}curSource=null;}window.speechSynthesis?.cancel();}
 async function playBase64Audio(b64){
   return new Promise((resolve,reject)=>{
     try{
@@ -828,27 +940,20 @@ async function playBase64Audio(b64){
       const bytes=atob(b64);const buf=new Uint8Array(bytes.length);
       for(let i=0;i<bytes.length;i++)buf[i]=bytes.charCodeAt(i);
       audioCtx.decodeAudioData(buf.buffer,decoded=>{
-        const src=audioCtx.createBufferSource();src.buffer=decoded;
-        src.connect(audioCtx.destination);curSource=src;
-        setState('speaking');
-        src.onended=()=>{curSource=null;afterSpeak();resolve();};
-        src.start();
-      },err=>{console.warn('decode error',err);reject(err);});
+        const src=audioCtx.createBufferSource();src.buffer=decoded;src.connect(audioCtx.destination);
+        curSource=src;setState('speaking');
+        src.onended=()=>{curSource=null;afterSpeak();resolve();};src.start();
+      },err=>{reject(err);});
     }catch(e){reject(e);}
   });
 }
-
 async function playAudioUrl(url){
-  return new Promise((resolve)=>{
-    const audio=new Audio(url);audio.playbackRate=0.93;
-    setState('speaking');
-    audio.onended=()=>{afterSpeak();resolve();};
-    audio.onerror=()=>resolve();
+  return new Promise(resolve=>{
+    const audio=new Audio(url);audio.playbackRate=0.93;setState('speaking');
+    audio.onended=()=>{afterSpeak();resolve();};audio.onerror=()=>resolve();
     audio.play().catch(()=>resolve());
   });
 }
-
-// ── BROWSER FALLBACK ────────────────────────────
 function speakBrowser(text){
   if(!window.speechSynthesis){afterSpeak();return;}
   window.speechSynthesis.cancel();
@@ -858,28 +963,22 @@ function speakBrowser(text){
   const pick=voices.find(v=>preferred.some(p=>v.name.includes(p)))||voices.find(v=>v.lang.startsWith('en')&&v.name.toLowerCase().includes('female'))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
   if(pick)utt.voice=pick;
   utt.rate=0.93;utt.pitch=1.05;utt.volume=1;
-  utt.onstart=()=>setState('speaking');
-  utt.onend=()=>afterSpeak();
-  utt.onerror=()=>afterSpeak();
+  utt.onstart=()=>setState('speaking');utt.onend=()=>afterSpeak();utt.onerror=()=>afterSpeak();
   window.speechSynthesis.speak(utt);
 }
 if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>{};
+function afterSpeak(){setState('idle');if(P.listenMode==='always'&&alwaysOn)setTimeout(startAlways,600);}
 
-function afterSpeak(){
-  setState('idle');
-  if(P.listenMode==='always'&&alwaysOn)setTimeout(startAlways,600);
-}
-
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // UI HELPERS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function showBubble(t){document.getElementById('tText').textContent=t;document.getElementById('tBubble').classList.add('visible');}
 function hideBubble(){document.getElementById('tBubble').classList.remove('visible');}
 function showWave(on){document.getElementById('wave').classList.toggle('visible',on);}
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // SETTINGS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function populateSettings(){
   document.getElementById('s-cname').value=P.companionName||'Ember';
   document.getElementById('s-uname').value=P.userName||'';
@@ -891,10 +990,7 @@ function populateSettings(){
   document.getElementById('s-eleven-voice').value=P.elevenVoiceId||'';
   document.querySelectorAll('#s-tones .tone-btn').forEach(b=>b.classList.toggle('selected',b.dataset.tone===P.tone));
   document.querySelectorAll('#s-modes .listen-opt').forEach(b=>b.classList.toggle('selected',b.dataset.mode===P.listenMode));
-  // TTS cards
-  document.querySelectorAll('#s-tts-cards .tts-card').forEach(c=>{
-    c.classList.toggle('selected',c.dataset.engine===P.ttsEngine);
-  });
+  document.querySelectorAll('#s-tts-cards .tts-card').forEach(c=>c.classList.toggle('selected',c.dataset.engine===P.ttsEngine));
   document.getElementById('s-google-voice-wrap').style.display=P.ttsEngine==='google'?'block':'none';
 }
 function saveSettings(){
@@ -913,14 +1009,14 @@ function saveSettings(){
   flash('Settings saved ✦');setState('happy');setTimeout(()=>setState('idle'),1800);
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // MEMORY
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function renderMem(){
   const b=document.getElementById('memBody');b.innerHTML='';
-  const engineLabel={google:'Google Neural2',elevenlabs:'ElevenLabs',browser:'Browser TTS'};
+  const el={google:'Google Neural2',elevenlabs:'ElevenLabs',browser:'Browser TTS'};
   [{label:'Your Name',val:P.userName||'—'},{label:'Tone',val:P.tone?P.tone[0].toUpperCase()+P.tone.slice(1):'—'},
-   {label:'Model',val:ML[P.model]||'—'},{label:'Voice Engine',val:engineLabel[P.ttsEngine]||'—'},
+   {label:'Model',val:ML[P.model]||'—'},{label:'Voice Engine',val:el[P.ttsEngine]||'—'},
    {label:'Google Voice',val:P.googleVoice||'—'},{label:'Listen',val:P.listenMode==='always'?'Always on':'Tap / Spacebar'},
    {label:'Sessions',val:String(P.visitCount||1)},
    {label:'Last Visit',val:P.lastVisit?new Date(P.lastVisit).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'Today'}
@@ -950,25 +1046,25 @@ function renderChips(){const w=document.getElementById('topicChips');w.innerHTML
     c.onclick=()=>flash(`"${t}" — want to pick up where we left off?`);w.appendChild(c);});
   w.classList.add('visible');}
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // PANELS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function togglePanel(id){const p=document.getElementById(id),open=p.classList.contains('open');
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('open'));
   if(!open){if(id==='memoryPanel')renderMem();if(id==='settingsPanel')populateSettings();p.classList.add('open');}}
 document.addEventListener('click',e=>{if(!e.target.closest('.panel')&&!e.target.closest('.icon-btn'))document.querySelectorAll('.panel').forEach(p=>p.classList.remove('open'));});
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // PARTICLES
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function buildPts(){const c=document.getElementById('particles');
   for(let i=0;i<20;i++){const p=document.createElement('div');p.className='pt';const s=1+Math.random()*2.2;
     p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;bottom:${Math.random()*12}%;opacity:${.15+Math.random()*.45};animation-duration:${9+Math.random()*22}s;animation-delay:${Math.random()*16}s`;
     c.appendChild(p);}}
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // COWORK postMessage API
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 window.addEventListener('message',e=>{const d=e.data;if(!d||d.ember!=='setState')return;if(SL[d.value])setState(d.value);if(d.greeting)flash(d.greeting);if(d.speak)speakText(d.speak);});
 window.emberAPI={setState,flash,speakText,getProfile:()=>({...P})};
 </script>
