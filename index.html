@@ -7,30 +7,31 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap');
 :root{
-  --bg:#060c12;--surface2:rgba(10,28,44,.94);
-  --accent:#00e5ff;--accent2:#0af0d0;
-  --text:rgba(140,230,245,.75);--text-dim:rgba(80,170,190,.45);--text-bright:rgba(200,245,255,.95);
-  --border:rgba(0,200,230,.15);--border-h:rgba(0,220,255,.35);
+  --bg:#080604;--surface2:rgba(20,14,6,.94);
+  --accent:#e89030;--accent2:#ffd060;
+  --text:rgba(240,210,160,.75);--text-dim:rgba(160,120,70,.45);--text-bright:rgba(255,240,200,.95);
+  --border:rgba(200,130,40,.14);--border-h:rgba(220,160,60,.32);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-family:'Raleway',sans-serif;color:var(--text);}
 
 .aurora{position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 90% 55% at 50% 105%,rgba(0,90,130,.22) 0%,transparent 70%),
-             radial-gradient(ellipse 50% 40% at 15% 65%,rgba(0,50,90,.14) 0%,transparent 60%),
-             radial-gradient(ellipse 50% 40% at 85% 35%,rgba(0,110,150,.12) 0%,transparent 60%);
+  background:radial-gradient(ellipse 90% 55% at 50% 105%,rgba(80,40,10,.32) 0%,transparent 70%),
+             radial-gradient(ellipse 60% 45% at 15% 70%,rgba(60,30,5,.20) 0%,transparent 60%),
+             radial-gradient(ellipse 55% 40% at 85% 30%,rgba(70,35,8,.18) 0%,transparent 60%),
+             radial-gradient(ellipse 40% 30% at 50% 50%,rgba(40,20,4,.12) 0%,transparent 70%);
   animation:aurora 14s ease-in-out infinite alternate;}
 @keyframes aurora{0%{opacity:.7;transform:scale(1)}100%{opacity:1;transform:scale(1.05) translateY(-8px)}}
 .scanlines{position:fixed;inset:0;pointer-events:none;z-index:1;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,200,230,.012) 3px,rgba(0,200,230,.012) 4px);}
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(180,100,20,.008) 3px,rgba(180,100,20,.008) 4px);}
 #particles{position:fixed;inset:0;pointer-events:none;z-index:2;}
-.pt{position:absolute;border-radius:50%;background:rgba(0,210,235,.55);animation:float linear infinite;}
+.pt{position:absolute;border-radius:50%;background:rgba(220,140,40,.45);animation:float linear infinite;}
 @keyframes float{0%{transform:translateY(0) scale(1);opacity:0}15%{opacity:1}85%{opacity:.4}100%{transform:translateY(-100vh) scale(.2);opacity:0}}
 
 /* SCENE */
 .scene{position:relative;z-index:10;width:100vw;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .companion-name{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
-  font-size:clamp(22px,3.5vw,32px);letter-spacing:.15em;color:rgba(120,220,240,.5);
+  font-size:clamp(22px,3.5vw,32px);letter-spacing:.15em;color:rgba(220,160,70,.5);
   margin-bottom:2.5vh;opacity:0;animation:fadeUp .8s ease .4s forwards;user-select:none;}
 
 /* EYES — SVG-based, no divs */
@@ -40,7 +41,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 /* STATUS */
 .status-line{margin-top:3.5vh;display:flex;flex-direction:column;align-items:center;gap:6px;min-height:52px;}
 .status-greeting{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
-  font-size:clamp(13px,2.2vw,18px);color:rgba(160,235,248,.7);letter-spacing:.06em;
+  font-size:clamp(13px,2.2vw,18px);color:rgba(240,200,130,.7);letter-spacing:.06em;
   min-height:1.4em;opacity:0;animation:fadeUp .6s ease .8s forwards;
   text-align:center;padding:0 20px;max-width:72vw;line-height:1.55;}
 .status-label{font-size:clamp(9px,1.4vw,11px);letter-spacing:.38em;text-transform:uppercase;
@@ -63,10 +64,10 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
   cursor:pointer;transition:all .25s;font-size:clamp(20px,2.8vw,26px);
   opacity:0;animation:fadeUp .5s ease 1.6s forwards;user-select:none;}
 .mic-btn:hover{border-color:var(--border-h);background:rgba(0,60,90,.6);box-shadow:0 0 22px rgba(0,200,230,.18);}
-.mic-btn.active{border-color:rgba(0,240,255,.7);background:rgba(0,90,130,.6);
-  box-shadow:0 0 30px rgba(0,220,255,.35);animation:micPulse 1s ease-in-out infinite;}
-.mic-btn.always-on{border-color:rgba(0,200,100,.5);background:rgba(0,60,40,.5);}
-.mic-btn.always-on.active{border-color:rgba(0,255,140,.7);box-shadow:0 0 30px rgba(0,255,120,.3);}
+.mic-btn.active{border-color:rgba(230,160,50,.7);background:rgba(60,30,5,.6);
+  box-shadow:0 0 30px rgba(200,120,30,.4);animation:micPulse 1s ease-in-out infinite;}
+.mic-btn.always-on{border-color:rgba(200,140,40,.5);background:rgba(40,20,4,.5);}
+.mic-btn.always-on.active{border-color:rgba(240,180,60,.7);box-shadow:0 0 30px rgba(220,150,40,.35);}
 @keyframes micPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 
 /* WAVEFORM */
@@ -93,7 +94,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
   justify-content:space-between;padding:14px 20px;opacity:0;animation:fadeDown .5s ease 1.5s forwards;}
 .header-user{display:flex;align-items:center;gap:10px;}
 .header-avatar{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);
-  background:radial-gradient(circle at 40% 38%,rgba(0,180,210,.3),rgba(0,60,90,.6));
+  background:radial-gradient(circle at 40% 38%,rgba(60,180,110,.3),rgba(20,50,30,.6));
   display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--accent);font-weight:300;}
 .header-username{font-size:12px;font-weight:300;letter-spacing:.12em;color:var(--text-dim);}
 .header-right{display:flex;align-items:center;gap:8px;}
@@ -359,56 +360,86 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
   <div class="companion-name" id="cName">Ember</div>
 
   <!-- SVG EYES — the whole face is one SVG -->
-  <svg id="emberEyes" viewBox="0 0 320 180" onclick="handleMic()" style="cursor:pointer;overflow:visible;width:clamp(260px,48vw,440px);height:clamp(130px,20vw,180px)">
+  <svg id="emberEyes" viewBox="0 0 400 220" onclick="handleMic()" style="cursor:pointer;overflow:visible;width:clamp(320px,62vw,580px);height:clamp(170px,26vw,260px)">
     <defs>
+      <!-- Orb body: warm dark amber-brown depth -->
       <radialGradient id="gOrb" cx="50%" cy="36%" r="58%">
-        <stop offset="0%"   stop-color="#0a3d55" stop-opacity=".9"/>
-        <stop offset="55%"  stop-color="#061828"/>
-        <stop offset="100%" stop-color="#020810"/>
+        <stop offset="0%"   stop-color="#2a1a08" stop-opacity=".98"/>
+        <stop offset="45%"  stop-color="#180e04"/>
+        <stop offset="100%" stop-color="#080402"/>
       </radialGradient>
-      <radialGradient id="gCore" cx="38%" cy="34%" r="52%">
-        <stop offset="0%"   stop-color="#eafaff"/>
-        <stop offset="22%"  stop-color="#7eeeff"/>
-        <stop offset="55%"  stop-color="#00b8d8"/>
+      <!-- Core light: hot white-yellow center bleeding to amber-teal -->
+      <radialGradient id="gCore" cx="40%" cy="36%" r="55%">
+        <stop offset="0%"   stop-color="#ffffff"/>
+        <stop offset="15%"  stop-color="#fff8c0"/>
+        <stop offset="38%"  stop-color="#ffcc44"/>
+        <stop offset="65%"  stop-color="#e07820"/>
         <stop offset="100%" stop-color="transparent"/>
       </radialGradient>
+      <!-- Mid iris fill: warm amber pool behind the iris ring -->
+      <radialGradient id="gIris" cx="50%" cy="42%" r="52%">
+        <stop offset="0%"   stop-color="#d4780a" stop-opacity=".55"/>
+        <stop offset="55%"  stop-color="#8a3e08" stop-opacity=".35"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+      <!-- Outer glow: warm amber-orange halo — the Loona signature -->
       <radialGradient id="gGlowL" cx="50%" cy="50%" r="50%">
-        <stop offset="0%"   stop-color="#00c8e8" stop-opacity=".2"/>
-        <stop offset="100%" stop-color="#00c8e8" stop-opacity="0"/>
+        <stop offset="0%"   stop-color="#e88020" stop-opacity=".38"/>
+        <stop offset="45%"  stop-color="#c05010" stop-opacity=".14"/>
+        <stop offset="100%" stop-color="#e88020" stop-opacity="0"/>
       </radialGradient>
       <radialGradient id="gGlowR" cx="50%" cy="50%" r="50%">
-        <stop offset="0%"   stop-color="#00c8e8" stop-opacity=".2"/>
-        <stop offset="100%" stop-color="#00c8e8" stop-opacity="0"/>
+        <stop offset="0%"   stop-color="#e88020" stop-opacity=".38"/>
+        <stop offset="45%"  stop-color="#c05010" stop-opacity=".14"/>
+        <stop offset="100%" stop-color="#e88020" stop-opacity="0"/>
       </radialGradient>
       <clipPath id="cpL"><path id="cpLp" d=""/></clipPath>
       <clipPath id="cpR"><path id="cpRp" d=""/></clipPath>
     </defs>
 
-    <!-- LEFT EYE — cx=88, cy=90 -->
-    <ellipse id="glowL" cx="88" cy="90" rx="68" ry="74" fill="url(#gGlowL)"/>
+    <!-- LEFT EYE — cx=100, cy=110 -->
+    <ellipse id="glowL" cx="100" cy="110" rx="90" ry="96" fill="url(#gGlowL)"/>
     <g clip-path="url(#cpL)">
       <path id="fillL" d="" fill="url(#gOrb)"/>
+      <!-- Warm amber pool inside the iris -->
+      <ellipse id="irisPoolL" cx="100" cy="110" rx="36" ry="36" fill="url(#gIris)"/>
       <g id="pupilGroupL">
-        <ellipse id="irisL" cx="88" cy="90" rx="26" ry="26" fill="none" stroke="rgba(0,145,175,.52)" stroke-width="9" stroke-dasharray="5 4"/>
-        <ellipse id="pupilL" cx="88" cy="90" rx="12" ry="12" fill="#010a12"/>
-        <ellipse id="coreL"  cx="88" cy="87" rx="9"  ry="9"  fill="url(#gCore)"/>
-        <ellipse cx="77" cy="78" rx="4" ry="3" fill="rgba(255,255,255,.5)" transform="rotate(-18,77,78)"/>
+        <!-- Iris ring: warm amber-gold -->
+        <ellipse id="irisL" cx="100" cy="110" rx="26" ry="26" fill="none" stroke="rgba(220,130,30,.7)" stroke-width="10" stroke-dasharray="6 4"/>
+        <!-- Pupil: dark warm brown, not cold black -->
+        <ellipse id="pupilL" cx="100" cy="110" rx="12" ry="12" fill="#1a0c04"/>
+        <!-- Core: hot white-gold -->
+        <ellipse id="coreL"  cx="100" cy="107" rx="9"  ry="9"  fill="url(#gCore)"/>
+        <!-- Specular: warm white -->
+        <ellipse cx="87" cy="95" rx="5" ry="4" fill="rgba(255,248,220,.65)" transform="rotate(-18,87,95)"/>
+        <!-- Small secondary specular -->
+        <ellipse cx="112" cy="98" rx="2.5" ry="2" fill="rgba(255,240,180,.35)" transform="rotate(10,112,98)"/>
       </g>
     </g>
-    <path id="rimL" d="" fill="none" stroke="rgba(0,185,215,.28)" stroke-width="1.5"/>
+    <!-- Rim: warm amber glow -->
+    <path id="rimL" d="" fill="none" stroke="rgba(200,100,20,.35)" stroke-width="2"/>
 
-    <!-- RIGHT EYE — cx=232, cy=90 -->
-    <ellipse id="glowR" cx="232" cy="90" rx="68" ry="74" fill="url(#gGlowR)"/>
+    <!-- RIGHT EYE — cx=300, cy=110 -->
+    <ellipse id="glowR" cx="300" cy="110" rx="90" ry="96" fill="url(#gGlowR)"/>
     <g clip-path="url(#cpR)">
       <path id="fillR" d="" fill="url(#gOrb)"/>
+      <!-- Warm amber pool inside the iris -->
+      <ellipse id="irisPoolR" cx="300" cy="110" rx="36" ry="36" fill="url(#gIris)"/>
       <g id="pupilGroupR">
-        <ellipse id="irisR" cx="232" cy="90" rx="26" ry="26" fill="none" stroke="rgba(0,145,175,.52)" stroke-width="9" stroke-dasharray="5 4"/>
-        <ellipse id="pupilR" cx="232" cy="90" rx="12" ry="12" fill="#010a12"/>
-        <ellipse id="coreR"  cx="232" cy="87" rx="9"  ry="9"  fill="url(#gCore)"/>
-        <ellipse cx="221" cy="78" rx="4" ry="3" fill="rgba(255,255,255,.5)" transform="rotate(-18,221,78)"/>
+        <!-- Iris ring: warm amber-gold -->
+        <ellipse id="irisR" cx="300" cy="110" rx="26" ry="26" fill="none" stroke="rgba(220,130,30,.7)" stroke-width="10" stroke-dasharray="6 4"/>
+        <!-- Pupil: dark warm brown -->
+        <ellipse id="pupilR" cx="300" cy="110" rx="12" ry="12" fill="#1a0c04"/>
+        <!-- Core: hot white-gold -->
+        <ellipse id="coreR"  cx="300" cy="107" rx="9"  ry="9"  fill="url(#gCore)"/>
+        <!-- Specular: warm white -->
+        <ellipse cx="287" cy="95" rx="5" ry="4" fill="rgba(255,248,220,.65)" transform="rotate(-18,287,95)"/>
+        <!-- Small secondary specular -->
+        <ellipse cx="312" cy="98" rx="2.5" ry="2" fill="rgba(255,240,180,.35)" transform="rotate(10,312,98)"/>
       </g>
     </g>
-    <path id="rimR" d="" fill="none" stroke="rgba(0,185,215,.28)" stroke-width="1.5"/>
+    <!-- Rim: warm amber glow -->
+    <path id="rimR" d="" fill="none" stroke="rgba(200,100,20,.35)" stroke-width="2"/>
   </svg>
 
   <div class="status-line">
@@ -433,7 +464,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
   <div class="panel-body">
     <div><label class="field-label">Companion name</label><input class="field-input" id="s-cname" type="text" placeholder="Ember" maxlength="20"></div>
     <div><label class="field-label">Your name</label><input class="field-input" id="s-uname" type="text" placeholder="Your name" maxlength="30"></div>
-    <div><label class="field-label">Anthropic API key</label>
+    <div class="dev-hide"><label class="field-label">Anthropic API key</label>
       <div class="key-row"><input class="field-input" id="s-claude-key" type="password" placeholder="sk-ant-…" autocomplete="off"><button class="key-toggle" id="s-ce" onclick="toggleVis('s-claude-key','s-ce')">👁</button></div></div>
     <div><label class="field-label">AI model</label>
       <select class="field-select" id="s-model">
@@ -447,7 +478,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
         <div class="tts-card" data-engine="google" onclick="pickTTS(this)">
           <div class="tts-card-header"><div class="tts-card-dot"></div><span class="tts-card-name">Google Neural2</span><span class="tts-badge active">Active</span></div>
           <div class="tts-card-sub">Natural, expressive voice.</div>
-          <div class="tts-card-key"><div class="key-row" style="margin-top:6px;">
+          <div class="tts-card-key dev-hide"><div class="key-row" style="margin-top:6px;">
             <input class="field-input" id="s-google-key" type="password" placeholder="AIza…" autocomplete="off" style="font-size:11px;padding:7px 10px;">
             <button class="key-toggle" id="s-ge" onclick="event.stopPropagation();toggleVis('s-google-key','s-ge')">👁</button>
           </div></div>
@@ -499,6 +530,28 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 </div>
 
 <script>
+// ╔═══════════════════════════════════════════════════════╗
+// ║  EMBER CONFIG — edit this block only                  ║
+// ╠═══════════════════════════════════════════════════════╣
+// ║  DEV MODE  → paste your keys below, set MODE='dev'    ║
+// ║  PROD MODE → set MODE='prod', clear keys below        ║
+// ║              users will enter their own keys           ║
+// ╚═══════════════════════════════════════════════════════╝
+const EMBER_CONFIG = {
+  MODE: 'dev',                      // 'dev' | 'prod'
+  ANTHROPIC_KEY: '',                // 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 (dev only)
+  GOOGLE_TTS_KEY: '',               // AIzaSyCRQudH6LFNweVdrYWXcgIVM4JkbbIEuc4(dev only)
+  GOOGLE_VOICE: 'en-US-Neural2-F', // default voice
+  DEFAULT_TONE: 'warm',
+  COMPANION_NAME: 'Ember',
+};
+// ═══════════════════════════════════════════════════════
+// Key resolution — dev config takes priority over user keys
+// In prod mode, always uses user-entered keys from storage
+// ═══════════════════════════════════════════════════════
+function getClaudeKey(){ return EMBER_CONFIG.MODE==='dev'&&EMBER_CONFIG.ANTHROPIC_KEY ? EMBER_CONFIG.ANTHROPIC_KEY : P.claudeKey?.trim(); }
+function getGoogleKey(){ return EMBER_CONFIG.MODE==='dev'&&EMBER_CONFIG.GOOGLE_TTS_KEY ? EMBER_CONFIG.GOOGLE_TTS_KEY : P.googleKey?.trim(); }
+
 // ═══════════════════════════════════════════════════════
 // STORAGE
 // ═══════════════════════════════════════════════════════
@@ -514,38 +567,44 @@ let P=loadP();
 // SVG EYE MORPH SYSTEM
 // ═══════════════════════════════════════════════════════
 const EYES=[
-  {cx:88,  cy:90, fill:'fillL',rim:'rimL',cpEl:'cpLp',iris:'irisL',pupil:'pupilL',core:'coreL',glow:'glowL'},
-  {cx:232, cy:90, fill:'fillR',rim:'rimR',cpEl:'cpRp',iris:'irisR',pupil:'pupilR',core:'coreR',glow:'glowR'},
+  {cx:100, cy:110, fill:'fillL',rim:'rimL',cpEl:'cpLp',iris:'irisL',pupil:'pupilL',core:'coreL',glow:'glowL'},
+  {cx:300, cy:110, fill:'fillR',rim:'rimR',cpEl:'cpRp',iris:'irisR',pupil:'pupilR',core:'coreR',glow:'glowR'},
 ];
 
 // Generate eye path from state parameters — all shapes close smoothly
 function eyePath(cx,cy,state){
   const S={
-    idle:      {t:cy-50,b:cy+50,hw:40, tc:cy-18,bc:cy+18, happyBot:false},
-    listening: {t:cy-58,b:cy+58,hw:46, tc:cy-22,bc:cy+22, happyBot:false},
-    thinking:  {t:cy-36,b:cy+48,hw:38, tc:cy-12,bc:cy+20, happyBot:false},
-    speaking:  {t:cy-46,b:cy+46,hw:40, tc:cy-16,bc:cy+16, happyBot:false},
-    surprised: {t:cy-62,b:cy+62,hw:52, tc:cy-26,bc:cy+26, happyBot:false},
-    happy:     {t:cy-50,b:cy+16,hw:44, tc:cy-20,bc:cy+32, happyBot:true},
-    blink:     {t:cy-3, b:cy+3, hw:40, tc:cy,   bc:cy,    happyBot:false},
+    // Tall elegant oval — generous height
+    idle:      {t:cy-68,b:cy+68,hw:54, tc:cy-26,bc:cy+26, happyBot:false},
+    // Wide open — significantly taller and wider, really attentive
+    listening: {t:cy-82,b:cy+82,hw:64, tc:cy-34,bc:cy+34, happyBot:false},
+    // Upper lid drops noticeably — focused, squinting inward
+    thinking:  {t:cy-48,b:cy+66,hw:50, tc:cy-16,bc:cy+28, happyBot:false},
+    // Gentle rhythmic squeeze — slightly shorter
+    speaking:  {t:cy-62,b:cy+62,hw:54, tc:cy-22,bc:cy+22, happyBot:false},
+    // Almost circular — maximum surprise
+    surprised: {t:cy-88,b:cy+88,hw:74, tc:cy-38,bc:cy+38, happyBot:false},
+    // Happy crescent — strong upward curve on bottom
+    happy:     {t:cy-68,b:cy+22,hw:60, tc:cy-28,bc:cy+44, happyBot:true},
+    // Thin line — whole eye pinches to a sliver
+    blink:     {t:cy-4, b:cy+4, hw:54, tc:cy,   bc:cy,    happyBot:false},
   };
   const p=S[state]||S.idle;
   const l=cx-p.hw, r=cx+p.hw;
   if(p.happyBot){
-    // Bottom curves upward — crescent/happy shape
-    return `M${cx},${p.t} C${r},${p.t} ${r},${p.tc} ${r},${cy} C${r},${p.bc} ${cx+16},${p.b} ${cx},${p.b} C${cx-16},${p.b} ${l},${p.bc} ${l},${cy} C${l},${p.tc} ${l},${p.t} ${cx},${p.t}Z`;
+    return `M${cx},${p.t} C${r},${p.t} ${r},${p.tc} ${r},${cy} C${r},${p.bc} ${cx+22},${p.b} ${cx},${p.b} C${cx-22},${p.b} ${l},${p.bc} ${l},${cy} C${l},${p.tc} ${l},${p.t} ${cx},${p.t}Z`;
   }
   return `M${cx},${p.t} C${r},${p.t} ${r},${p.tc} ${r},${cy} C${r},${p.bc} ${r},${p.b} ${cx},${p.b} C${l},${p.b} ${l},${p.bc} ${l},${cy} C${l},${p.tc} ${l},${p.t} ${cx},${p.t}Z`;
 }
 
 const eyeSizes={
-  idle:      {iris:26,pupil:12,core:9, glowRx:68,glowRy:74,cyOff:0},
-  listening: {iris:30,pupil:16,core:12,glowRx:78,glowRy:84,cyOff:0},
-  thinking:  {iris:23,pupil:10,core:8, glowRx:60,glowRy:66,cyOff:5},
-  speaking:  {iris:25,pupil:12,core:9, glowRx:65,glowRy:70,cyOff:0},
-  surprised: {iris:34,pupil:21,core:15,glowRx:82,glowRy:90,cyOff:0},
-  happy:     {iris:21,pupil:10,core:8, glowRx:68,glowRy:58,cyOff:-6},
-  blink:     {iris:3, pupil:2, core:2, glowRx:68,glowRy:22,cyOff:0},
+  idle:      {iris:36, pupil:17, core:13, glowRx:90, glowRy:96, cyOff:0},
+  listening: {iris:44, pupil:23, core:17, glowRx:108,glowRy:116,cyOff:0},
+  thinking:  {iris:32, pupil:14, core:11, glowRx:82, glowRy:88, cyOff:8},
+  speaking:  {iris:35, pupil:17, core:13, glowRx:88, glowRy:94, cyOff:0},
+  surprised: {iris:52, pupil:30, core:22, glowRx:118,glowRy:126,cyOff:0},
+  happy:     {iris:30, pupil:14, core:12, glowRx:94, glowRy:74, cyOff:-8},
+  blink:     {iris:4,  pupil:3,  core:2,  glowRx:90, glowRy:26, cyOff:0},
 };
 
 function lerpN(a,b,t){return a+(b-a)*t;}
@@ -577,6 +636,15 @@ function applyEye(eye,toState,t,fromState){
   document.getElementById(eye.cpEl).setAttribute('d',path);
   document.getElementById(eye.glow).setAttribute('rx',glowRx);
   document.getElementById(eye.glow).setAttribute('ry',glowRy);
+
+  // Scale iris pool to match iris size
+  const poolId=eye.iris.replace('iris','irisPool');
+  const poolEl=document.getElementById(poolId);
+  if(poolEl){
+    poolEl.setAttribute('rx',iris*1.1);
+    poolEl.setAttribute('ry',toState==='happy'?iris*.7:iris*1.1);
+    poolEl.setAttribute('cy',eye.cy+cyOff);
+  }
 
   const irisEl=document.getElementById(eye.iris);
   const irisRy=toState==='happy'?iris*.6:iris;
@@ -670,15 +738,15 @@ function trackPupils(mx,my){
   const svgEl=document.getElementById('emberEyes');
   const rect=svgEl.getBoundingClientRect();
   // Convert screen coords to SVG viewBox coords
-  const scaleX=320/rect.width, scaleY=180/rect.height;
+  const scaleX=400/rect.width, scaleY=220/rect.height;
   const svgX=(mx-rect.left)*scaleX, svgY=(my-rect.top)*scaleY;
 
   EYES.forEach((eye,i)=>{
     const key=i===0?'L':'R';
     const dx=svgX-eye.cx, dy=svgY-eye.cy;
     const angle=Math.atan2(dy,dx);
-    // Max travel: 4px horizontal, 3px vertical — tight clamp keeps them inside
-    const maxX=4, maxY=3;
+    // Max travel: 6px horizontal, 4px vertical — bigger eyes need slightly more travel
+    const maxX=6, maxY=4;
     const dist=Math.sqrt(dx*dx+dy*dy)||1;
     const scale=Math.min(dist/120,1);
     pupilTarget[key].x=Math.cos(angle)*maxX*scale;
@@ -718,8 +786,22 @@ const micBtn=document.getElementById('micBtn');
 EYES.forEach(e=>applyEye(e,'idle',1,'idle'));
 morphCur='idle';
 
-if(P.onboarded){P.visitCount=(P.visitCount||0)+1;P.lastVisit=new Date().toISOString();saveP();
-  document.getElementById('onboarding').classList.add('hidden');initMain();}
+// Always inject dev keys if present — runs every load,
+// so changing EMBER_CONFIG takes effect without clearing storage
+function injectConfigKeys(){
+  if(EMBER_CONFIG.MODE==='dev'){
+    if(EMBER_CONFIG.ANTHROPIC_KEY) P.claudeKey=EMBER_CONFIG.ANTHROPIC_KEY;
+    if(EMBER_CONFIG.GOOGLE_TTS_KEY){ P.googleKey=EMBER_CONFIG.GOOGLE_TTS_KEY; P.ttsEngine='google'; }
+    if(EMBER_CONFIG.GOOGLE_VOICE) P.googleVoice=EMBER_CONFIG.GOOGLE_VOICE;
+    saveP();
+  }
+}
+
+if(P.onboarded){
+  P.visitCount=(P.visitCount||0)+1;P.lastVisit=new Date().toISOString();
+  injectConfigKeys();
+  document.getElementById('onboarding').classList.add('hidden');initMain();
+}
 
 // ═══════════════════════════════════════════════════════
 // ONBOARDING
@@ -729,14 +811,18 @@ function obNext(){
   if(obStep===1){const n=document.getElementById('ob-name').value.trim();if(!n){document.getElementById('ob-name').focus();return;}P.userName=n;}
   if(obStep===2){P.claudeKey=document.getElementById('ob-claude-key').value.trim();}
   if(obStep===3){P.googleKey=document.getElementById('ob-google-key').value.trim();}
-  obStep++;document.querySelectorAll('.onboard-step').forEach((el,i)=>el.classList.toggle('active',i===obStep));
+  obStep++;
+  // In dev mode skip steps 2 & 3 (API keys) — jump straight to tone
+  if(EMBER_CONFIG.MODE==='dev'&&(obStep===2||obStep===3))obStep++;
+  document.querySelectorAll('.onboard-step').forEach((el,i)=>el.classList.toggle('active',i===obStep));
 }
 function obBack(){obStep--;document.querySelectorAll('.onboard-step').forEach((el,i)=>el.classList.toggle('active',i===obStep));}
 function finishOB(){
   P.tone=document.querySelector('#ob-tones .tone-btn.selected')?.dataset.tone||'warm';
   P.listenMode=document.querySelector('#ob-modes .listen-opt.selected')?.dataset.mode||'tap';
   P.ttsEngine=P.googleKey?'google':'browser';
-  P.onboarded=true;P.visitCount=1;P.lastVisit=new Date().toISOString();saveP();
+  P.onboarded=true;P.visitCount=1;P.lastVisit=new Date().toISOString();
+  injectConfigKeys();
   document.getElementById('onboarding').classList.add('hidden');initMain();
 }
 function pickTone(btn,grid){document.querySelectorAll('#'+grid+' .tone-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
@@ -750,7 +836,13 @@ function toggleVis(id,btnId){const i=document.getElementById(id),b=document.getE
 // ═══════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════
-function initMain(){updateUI();populateSettings();renderMem();renderChips();buildPts();startBlink();playGreet();initMicMode();updateEnginePill();}
+function initMain(){
+  updateUI();populateSettings();renderMem();renderChips();buildPts();startBlink();playGreet();initMicMode();updateEnginePill();
+  // In dev mode — hide API key fields from UI since keys are hardcoded
+  if(EMBER_CONFIG.MODE==='dev'){
+    document.querySelectorAll('.dev-hide').forEach(el=>el.style.display='none');
+  }
+}
 
 function updateUI(){
   const n=P.userName||'You';
@@ -881,7 +973,7 @@ async function handleText(text){
 // CLAUDE
 // ═══════════════════════════════════════════════════════
 async function callClaude(userText){
-  const key=P.claudeKey?.trim();
+  const key=getClaudeKey();
   if(!key){flash('No Claude key — add it in Settings ⚙');setState('idle');return null;}
   const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words — voice output.',
     calm:'Be calm and focused. 2 sentences max for voice.',direct:'Be direct. One sentence max. No filler.',
@@ -907,15 +999,17 @@ async function speakText(text){
   const engine=P.ttsEngine||'google';
   if(engine==='elevenlabs'&&P.elevenKey?.trim()&&P.elevenVoiceId?.trim()){
     const ok=await speakElevenLabs(text);if(ok)return;flash('ElevenLabs failed — falling back…',1800);}
-  if((engine==='google'||engine==='elevenlabs')&&P.googleKey?.trim()){
+  if((engine==='google'||engine==='elevenlabs')&&getGoogleKey()){
     const ok=await speakGoogle(text);if(ok)return;flash('Google TTS failed — using browser…',1800);}
   speakBrowser(text);
 }
 async function speakGoogle(text){
   try{
-    const body={input:{text},voice:{languageCode:'en-US',name:P.googleVoice||'en-US-Neural2-F'},
+    const key=getGoogleKey();
+    if(!key)return false;
+    const body={input:{text},voice:{languageCode:'en-US',name:P.googleVoice||EMBER_CONFIG.GOOGLE_VOICE},
       audioConfig:{audioEncoding:'MP3',speakingRate:0.93,pitch:1.5,volumeGainDb:0}};
-    const res=await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${P.googleKey.trim()}`,
+    const res=await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${key}`,
       {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     if(!res.ok)return false;
     const data=await res.json();if(!data.audioContent)return false;
