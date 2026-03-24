@@ -531,26 +531,36 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 
 <script>
 // ╔═══════════════════════════════════════════════════════╗
-// ║  EMBER CONFIG — edit this block only                  ║
-// ╠═══════════════════════════════════════════════════════╣
-// ║  DEV MODE  → paste your keys below, set MODE='dev'    ║
-// ║  PROD MODE → set MODE='prod', clear keys below        ║
-// ║              users will enter their own keys           ║
+// ║  EMBER CONFIG                                         ║
+// ║  Keys fetched from /api/config (Vercel env vars)      ║
+// ║  For local dev: paste keys directly below             ║
 // ╚═══════════════════════════════════════════════════════╝
 const EMBER_CONFIG = {
   MODE: 'dev',
-  ANTHROPIC_KEY: '__ANTHROPIC_KEY__',
-  GOOGLE_TTS_KEY: '__GOOGLE_TTS_KEY__',
+  ANTHROPIC_KEY: '',     // local dev only — leave empty for Vercel
+  GOOGLE_TTS_KEY: '',    // local dev only — leave empty for Vercel
   GOOGLE_VOICE: 'en-US-Neural2-F',
   DEFAULT_TONE: 'warm',
   COMPANION_NAME: 'Ember',
 };
+
+// Fetch keys from /api/config (Vercel injects env vars there)
+async function loadConfig(){
+  try{
+    const r=await fetch('/api/config');
+    if(!r.ok) return;
+    const d=await r.json();
+    if(d.anthropic) EMBER_CONFIG.ANTHROPIC_KEY=d.anthropic;
+    if(d.google)    EMBER_CONFIG.GOOGLE_TTS_KEY=d.google;
+    if(d.voice)     EMBER_CONFIG.GOOGLE_VOICE=d.voice;
+  }catch(e){ /* local dev — use hardcoded keys above */ }
+}
+
 // ═══════════════════════════════════════════════════════
-// Key resolution — dev config takes priority over user keys
-// In prod mode, always uses user-entered keys from storage
+// Key resolution
 // ═══════════════════════════════════════════════════════
-function getClaudeKey(){ return EMBER_CONFIG.MODE==='dev'&&EMBER_CONFIG.ANTHROPIC_KEY ? EMBER_CONFIG.ANTHROPIC_KEY : P.claudeKey?.trim(); }
-function getGoogleKey(){ return EMBER_CONFIG.MODE==='dev'&&EMBER_CONFIG.GOOGLE_TTS_KEY ? EMBER_CONFIG.GOOGLE_TTS_KEY : P.googleKey?.trim(); }
+function getClaudeKey(){ return EMBER_CONFIG.ANTHROPIC_KEY || P.claudeKey?.trim(); }
+function getGoogleKey(){ return EMBER_CONFIG.GOOGLE_TTS_KEY || P.googleKey?.trim(); }
 
 // ═══════════════════════════════════════════════════════
 // STORAGE
@@ -780,28 +790,27 @@ let recog=null, isListening=false, alwaysOn=false, spaceDown=false, audioCtx=nul
 const micBtn=document.getElementById('micBtn');
 
 // ═══════════════════════════════════════════════════════
-// BOOT
+// BOOT — fetch config first, then start app
 // ═══════════════════════════════════════════════════════
-// Draw idle eyes immediately
 EYES.forEach(e=>applyEye(e,'idle',1,'idle'));
 morphCur='idle';
 
-// Always inject dev keys if present — runs every load,
-// so changing EMBER_CONFIG takes effect without clearing storage
 function injectConfigKeys(){
-  if(EMBER_CONFIG.MODE==='dev'){
-    if(EMBER_CONFIG.ANTHROPIC_KEY) P.claudeKey=EMBER_CONFIG.ANTHROPIC_KEY;
-    if(EMBER_CONFIG.GOOGLE_TTS_KEY){ P.googleKey=EMBER_CONFIG.GOOGLE_TTS_KEY; P.ttsEngine='google'; }
-    if(EMBER_CONFIG.GOOGLE_VOICE) P.googleVoice=EMBER_CONFIG.GOOGLE_VOICE;
-    saveP();
-  }
+  if(EMBER_CONFIG.ANTHROPIC_KEY) P.claudeKey=EMBER_CONFIG.ANTHROPIC_KEY;
+  if(EMBER_CONFIG.GOOGLE_TTS_KEY){ P.googleKey=EMBER_CONFIG.GOOGLE_TTS_KEY; P.ttsEngine='google'; }
+  if(EMBER_CONFIG.GOOGLE_VOICE) P.googleVoice=EMBER_CONFIG.GOOGLE_VOICE;
+  saveP();
 }
 
-if(P.onboarded){
-  P.visitCount=(P.visitCount||0)+1;P.lastVisit=new Date().toISOString();
-  injectConfigKeys();
-  document.getElementById('onboarding').classList.add('hidden');initMain();
-}
+(async()=>{
+  await loadConfig();
+  if(P.onboarded){
+    P.visitCount=(P.visitCount||0)+1;P.lastVisit=new Date().toISOString();
+    injectConfigKeys();
+    document.getElementById('onboarding').classList.add('hidden');
+    initMain();
+  }
+})();
 
 // ═══════════════════════════════════════════════════════
 // ONBOARDING
