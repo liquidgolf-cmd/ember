@@ -360,7 +360,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
   <div class="companion-name" id="cName">Ember</div>
 
   <!-- SVG EYES — the whole face is one SVG -->
-  <svg id="emberEyes" viewBox="0 0 400 220" onclick="handleMic()" style="cursor:pointer;overflow:visible;width:clamp(320px,62vw,580px);height:clamp(170px,26vw,260px)">
+  <svg id="emberEyes" viewBox="0 0 420 240" onclick="handleMic()" style="cursor:pointer;overflow:visible;width:clamp(340px,75vw,680px);height:clamp(190px,32vw,370px)">
     <defs>
       <!-- Orb body: warm dark amber-brown depth -->
       <radialGradient id="gOrb" cx="50%" cy="36%" r="58%">
@@ -397,48 +397,34 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
       <clipPath id="cpR"><path id="cpRp" d=""/></clipPath>
     </defs>
 
-    <!-- LEFT EYE — cx=100, cy=110 -->
-    <ellipse id="glowL" cx="100" cy="110" rx="90" ry="96" fill="url(#gGlowL)"/>
+    <!-- LEFT EYE — cx=105, cy=120 -->
+    <ellipse id="glowL" cx="105" cy="120" rx="108" ry="114" fill="url(#gGlowL)"/>
     <g clip-path="url(#cpL)">
       <path id="fillL" d="" fill="url(#gOrb)"/>
-      <!-- Warm amber pool inside the iris -->
-      <ellipse id="irisPoolL" cx="100" cy="110" rx="36" ry="36" fill="url(#gIris)"/>
+      <ellipse id="irisPoolL" cx="105" cy="120" rx="36" ry="36" fill="url(#gIris)"/>
       <g id="pupilGroupL">
-        <!-- Iris ring: warm amber-gold -->
-        <ellipse id="irisL" cx="100" cy="110" rx="26" ry="26" fill="none" stroke="rgba(220,130,30,.7)" stroke-width="10" stroke-dasharray="6 4"/>
-        <!-- Pupil: dark warm brown, not cold black -->
-        <ellipse id="pupilL" cx="100" cy="110" rx="12" ry="12" fill="#1a0c04"/>
-        <!-- Core: hot white-gold -->
-        <ellipse id="coreL"  cx="100" cy="107" rx="9"  ry="9"  fill="url(#gCore)"/>
-        <!-- Specular: warm white -->
-        <ellipse cx="87" cy="95" rx="5" ry="4" fill="rgba(255,248,220,.65)" transform="rotate(-18,87,95)"/>
-        <!-- Small secondary specular -->
-        <ellipse cx="112" cy="98" rx="2.5" ry="2" fill="rgba(255,240,180,.35)" transform="rotate(10,112,98)"/>
+        <ellipse id="irisL" cx="105" cy="120" rx="26" ry="26" fill="none" stroke="rgba(220,130,30,.7)" stroke-width="10" stroke-dasharray="6 4"/>
+        <ellipse id="pupilL" cx="105" cy="120" rx="12" ry="12" fill="#1a0c04"/>
+        <ellipse id="coreL"  cx="105" cy="117" rx="9"  ry="9"  fill="url(#gCore)"/>
+        <ellipse cx="91" cy="104" rx="5" ry="4" fill="rgba(255,248,220,.65)" transform="rotate(-18,91,104)"/>
+        <ellipse cx="118" cy="108" rx="2.5" ry="2" fill="rgba(255,240,180,.35)" transform="rotate(10,118,108)"/>
       </g>
     </g>
-    <!-- Rim: warm amber glow -->
     <path id="rimL" d="" fill="none" stroke="rgba(200,100,20,.35)" stroke-width="2"/>
 
-    <!-- RIGHT EYE — cx=300, cy=110 -->
-    <ellipse id="glowR" cx="300" cy="110" rx="90" ry="96" fill="url(#gGlowR)"/>
+    <!-- RIGHT EYE — cx=315, cy=120 -->
+    <ellipse id="glowR" cx="315" cy="120" rx="108" ry="114" fill="url(#gGlowR)"/>
     <g clip-path="url(#cpR)">
       <path id="fillR" d="" fill="url(#gOrb)"/>
-      <!-- Warm amber pool inside the iris -->
-      <ellipse id="irisPoolR" cx="300" cy="110" rx="36" ry="36" fill="url(#gIris)"/>
+      <ellipse id="irisPoolR" cx="315" cy="120" rx="36" ry="36" fill="url(#gIris)"/>
       <g id="pupilGroupR">
-        <!-- Iris ring: warm amber-gold -->
-        <ellipse id="irisR" cx="300" cy="110" rx="26" ry="26" fill="none" stroke="rgba(220,130,30,.7)" stroke-width="10" stroke-dasharray="6 4"/>
-        <!-- Pupil: dark warm brown -->
-        <ellipse id="pupilR" cx="300" cy="110" rx="12" ry="12" fill="#1a0c04"/>
-        <!-- Core: hot white-gold -->
-        <ellipse id="coreR"  cx="300" cy="107" rx="9"  ry="9"  fill="url(#gCore)"/>
-        <!-- Specular: warm white -->
-        <ellipse cx="287" cy="95" rx="5" ry="4" fill="rgba(255,248,220,.65)" transform="rotate(-18,287,95)"/>
-        <!-- Small secondary specular -->
-        <ellipse cx="312" cy="98" rx="2.5" ry="2" fill="rgba(255,240,180,.35)" transform="rotate(10,312,98)"/>
+        <ellipse id="irisR" cx="315" cy="120" rx="26" ry="26" fill="none" stroke="rgba(220,130,30,.7)" stroke-width="10" stroke-dasharray="6 4"/>
+        <ellipse id="pupilR" cx="315" cy="120" rx="12" ry="12" fill="#1a0c04"/>
+        <ellipse id="coreR"  cx="315" cy="117" rx="9"  ry="9"  fill="url(#gCore)"/>
+        <ellipse cx="301" cy="104" rx="5" ry="4" fill="rgba(255,248,220,.65)" transform="rotate(-18,301,104)"/>
+        <ellipse cx="328" cy="108" rx="2.5" ry="2" fill="rgba(255,240,180,.35)" transform="rotate(10,328,108)"/>
       </g>
     </g>
-    <!-- Rim: warm amber glow -->
     <path id="rimR" d="" fill="none" stroke="rgba(200,100,20,.35)" stroke-width="2"/>
   </svg>
 
@@ -577,44 +563,37 @@ let P=loadP();
 // SVG EYE MORPH SYSTEM
 // ═══════════════════════════════════════════════════════
 const EYES=[
-  {cx:100, cy:110, fill:'fillL',rim:'rimL',cpEl:'cpLp',iris:'irisL',pupil:'pupilL',core:'coreL',glow:'glowL'},
-  {cx:300, cy:110, fill:'fillR',rim:'rimR',cpEl:'cpRp',iris:'irisR',pupil:'pupilR',core:'coreR',glow:'glowR'},
+  {cx:105, cy:120, fill:'fillL',rim:'rimL',cpEl:'cpLp',iris:'irisL',pupil:'pupilL',core:'coreL',glow:'glowL'},
+  {cx:315, cy:120, fill:'fillR',rim:'rimR',cpEl:'cpRp',iris:'irisR',pupil:'pupilR',core:'coreR',glow:'glowR'},
 ];
 
 // Generate eye path from state parameters — all shapes close smoothly
 function eyePath(cx,cy,state){
   const S={
-    // Tall elegant oval — generous height
-    idle:      {t:cy-68,b:cy+68,hw:54, tc:cy-26,bc:cy+26, happyBot:false},
-    // Wide open — significantly taller and wider, really attentive
-    listening: {t:cy-82,b:cy+82,hw:64, tc:cy-34,bc:cy+34, happyBot:false},
-    // Upper lid drops noticeably — focused, squinting inward
-    thinking:  {t:cy-48,b:cy+66,hw:50, tc:cy-16,bc:cy+28, happyBot:false},
-    // Gentle rhythmic squeeze — slightly shorter
-    speaking:  {t:cy-62,b:cy+62,hw:54, tc:cy-22,bc:cy+22, happyBot:false},
-    // Almost circular — maximum surprise
-    surprised: {t:cy-88,b:cy+88,hw:74, tc:cy-38,bc:cy+38, happyBot:false},
-    // Happy crescent — strong upward curve on bottom
-    happy:     {t:cy-68,b:cy+22,hw:60, tc:cy-28,bc:cy+44, happyBot:true},
-    // Thin line — whole eye pinches to a sliver
-    blink:     {t:cy-4, b:cy+4, hw:54, tc:cy,   bc:cy,    happyBot:false},
+    idle:      {t:cy-82, b:cy+82, hw:66,  tc:cy-32,bc:cy+32, happyBot:false},
+    listening: {t:cy-98, b:cy+98, hw:78,  tc:cy-42,bc:cy+42, happyBot:false},
+    thinking:  {t:cy-58, b:cy+80, hw:62,  tc:cy-20,bc:cy+34, happyBot:false},
+    speaking:  {t:cy-76, b:cy+76, hw:66,  tc:cy-28,bc:cy+28, happyBot:false},
+    surprised: {t:cy-108,b:cy+108,hw:90,  tc:cy-48,bc:cy+48, happyBot:false},
+    happy:     {t:cy-82, b:cy+26, hw:74,  tc:cy-34,bc:cy+54, happyBot:true},
+    blink:     {t:cy-5,  b:cy+5,  hw:66,  tc:cy,   bc:cy,    happyBot:false},
   };
   const p=S[state]||S.idle;
   const l=cx-p.hw, r=cx+p.hw;
   if(p.happyBot){
-    return `M${cx},${p.t} C${r},${p.t} ${r},${p.tc} ${r},${cy} C${r},${p.bc} ${cx+22},${p.b} ${cx},${p.b} C${cx-22},${p.b} ${l},${p.bc} ${l},${cy} C${l},${p.tc} ${l},${p.t} ${cx},${p.t}Z`;
+    return `M${cx},${p.t} C${r},${p.t} ${r},${p.tc} ${r},${cy} C${r},${p.bc} ${cx+26},${p.b} ${cx},${p.b} C${cx-26},${p.b} ${l},${p.bc} ${l},${cy} C${l},${p.tc} ${l},${p.t} ${cx},${p.t}Z`;
   }
   return `M${cx},${p.t} C${r},${p.t} ${r},${p.tc} ${r},${cy} C${r},${p.bc} ${r},${p.b} ${cx},${p.b} C${l},${p.b} ${l},${p.bc} ${l},${cy} C${l},${p.tc} ${l},${p.t} ${cx},${p.t}Z`;
 }
 
 const eyeSizes={
-  idle:      {iris:36, pupil:17, core:13, glowRx:90, glowRy:96, cyOff:0},
-  listening: {iris:44, pupil:23, core:17, glowRx:108,glowRy:116,cyOff:0},
-  thinking:  {iris:32, pupil:14, core:11, glowRx:82, glowRy:88, cyOff:8},
-  speaking:  {iris:35, pupil:17, core:13, glowRx:88, glowRy:94, cyOff:0},
-  surprised: {iris:52, pupil:30, core:22, glowRx:118,glowRy:126,cyOff:0},
-  happy:     {iris:30, pupil:14, core:12, glowRx:94, glowRy:74, cyOff:-8},
-  blink:     {iris:4,  pupil:3,  core:2,  glowRx:90, glowRy:26, cyOff:0},
+  idle:      {iris:46, pupil:22, core:17, glowRx:108,glowRy:114,cyOff:0},
+  listening: {iris:56, pupil:30, core:22, glowRx:128,glowRy:136,cyOff:0},
+  thinking:  {iris:40, pupil:18, core:14, glowRx:100,glowRy:108,cyOff:10},
+  speaking:  {iris:44, pupil:22, core:17, glowRx:106,glowRy:112,cyOff:0},
+  surprised: {iris:66, pupil:40, core:28, glowRx:148,glowRy:158,cyOff:0},
+  happy:     {iris:38, pupil:18, core:15, glowRx:112,glowRy:88, cyOff:-10},
+  blink:     {iris:5,  pupil:3,  core:2,  glowRx:108,glowRy:28, cyOff:0},
 };
 
 function lerpN(a,b,t){return a+(b-a)*t;}
@@ -706,7 +685,7 @@ function breathe(){
     const s=0.96+Math.sin(breathPhase)*0.04;
     EYES.forEach(e=>{
       const g=document.getElementById(e.glow);
-      g.setAttribute('rx',68*s); g.setAttribute('ry',74*s);
+      g.setAttribute('rx',108*s); g.setAttribute('ry',114*s);
     });
   }
   requestAnimationFrame(breathe);
@@ -748,7 +727,7 @@ function trackPupils(mx,my){
   const svgEl=document.getElementById('emberEyes');
   const rect=svgEl.getBoundingClientRect();
   // Convert screen coords to SVG viewBox coords
-  const scaleX=400/rect.width, scaleY=220/rect.height;
+  const scaleX=420/rect.width, scaleY=240/rect.height;
   const svgX=(mx-rect.left)*scaleX, svgY=(my-rect.top)*scaleY;
 
   EYES.forEach((eye,i)=>{
@@ -796,9 +775,10 @@ EYES.forEach(e=>applyEye(e,'idle',1,'idle'));
 morphCur='idle';
 
 function injectConfigKeys(){
-  if(EMBER_CONFIG.ANTHROPIC_KEY) P.claudeKey=EMBER_CONFIG.ANTHROPIC_KEY;
+  // Always overwrite with fresh config — never use stale cached keys
+  if(EMBER_CONFIG.ANTHROPIC_KEY){ P.claudeKey=EMBER_CONFIG.ANTHROPIC_KEY; }
   if(EMBER_CONFIG.GOOGLE_TTS_KEY){ P.googleKey=EMBER_CONFIG.GOOGLE_TTS_KEY; P.ttsEngine='google'; }
-  if(EMBER_CONFIG.GOOGLE_VOICE) P.googleVoice=EMBER_CONFIG.GOOGLE_VOICE;
+  if(EMBER_CONFIG.GOOGLE_VOICE){ P.googleVoice=EMBER_CONFIG.GOOGLE_VOICE; }
   saveP();
 }
 
