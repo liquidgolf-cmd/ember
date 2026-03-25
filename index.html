@@ -1031,104 +1031,61 @@ async function handleText(text){
 }
 
 // ═══════════════════════════════════════════════════════
-// CLAUDE
 // ═══════════════════════════════════════════════════════
-async function callClaude(userText){
-  const key=getClaudeKey();
-  if(!key){flash('No Claude key — add it in Settings ⚙');setState('idle');return null;}
+// AI — all models via /api/chat server proxy
+// Keys stay server-side — works on all devices including iOS
+// ═══════════════════════════════════════════════════════
+function getToneSystem(){
   const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words — voice output.',
     calm:'Be calm and focused. 2 sentences max for voice.',direct:'Be direct. One sentence max. No filler.',
     playful:'Be playful and light. Short, fun. Max 2 sentences.'};
-  const sys=`You are Ember, a warm AI companion. User's name: ${P.userName||'there'}.
+  return `You are Ember, a warm AI companion. User's name: ${P.userName||'there'}.
 ${toneMap[P.tone]||toneMap.warm}
 Speaking aloud via TTS — no markdown, lists, asterisks, or any formatting.
 Keep responses under 40 words unless the user asks for more.`;
+}
+async function callClaude(userText){ return callProxy(userText,'claude'); }
+async function callGPT(userText){ return callProxy(userText,'gpt4o'); }
+async function callGemini(userText){ return callProxy(userText,'gemini'); }
+async function callProxy(userText,model){
   const msgs=[...(P.history||[]).slice(-10).slice(0,-1),{role:'user',content:userText}];
   try{
     const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),15000);
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:sys,messages:msgs}),
-      signal:controller.signal});
+    const timeout=setTimeout(()=>controller.abort(),20000);
+    const res=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:msgs,system:getToneSystem(),model}),
+      signal:controller.signal
+    });
     clearTimeout(timeout);
-    if(!res.ok){const e=await res.json().catch(()=>({}));const msg=res.status===529||res.status===503?'Claude is overloaded — try again.':(e?.error?.message||`Error ${res.status}`).slice(0,90);flash(msg);setState('idle');return null;}
-    const d=await res.json();return d.content?.[0]?.text||null;
+    if(!res.ok){flash(`Error ${res.status} — try again`);setState('idle');return null;}
+    const d=await res.json();
+    if(d.error){flash(d.error.slice(0,90));setState('idle');return null;}
+    return d.text||null;
   }catch(e){
     if(e.name==='AbortError'){flash('Request timed out — try again.');setState('idle');return null;}
-    flash('Connection error: '+e.message.slice(0,60));setState('idle');return null;
+    flash('Connection error — check your internet.');setState('idle');return null;
   }
-}
-
-// ═══════════════════════════════════════════════════════
-// GPT-4o
-// ═══════════════════════════════════════════════════════
-async function callGPT(userText){
-  if(!EMBER_CONFIG.OPENAI_KEY) await loadConfig();
-  const key=EMBER_CONFIG.OPENAI_KEY||P.openaiKey?.trim();
-  if(!key){flash('No OpenAI key — add it in Settings ⚙');setState('idle');return null;}
-  const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words.',
-    calm:'Be calm and focused. 2 sentences max.',direct:'Be direct. One sentence max. No filler.',
-    playful:'Be playful and light. Short, fun. Max 2 sentences.'};
-  const sys=`You are Ember, a warm AI companion. User's name: ${P.userName||'there'}.
-${toneMap[P.tone]||toneMap.warm}
-Speaking aloud via TTS — no markdown, no lists, no asterisks, no formatting of any kind.
-Keep responses under 40 words unless the user asks for more.`;
-  const msgs=[{role:'system',content:sys},...(P.history||[]).slice(-10).slice(0,-1),{role:'user',content:userText}];
-  try{
-    const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
-      body:JSON.stringify({model:'gpt-4o',max_tokens:200,messages:msgs})});
-    if(!res.ok){const e=await res.json().catch(()=>({}));flash((e?.error?.message||`Error ${res.status}`).slice(0,90));setState('idle');return null;}
-    const d=await res.json();return d.choices?.[0]?.message?.content||null;
-  }catch{flash('Connection error — check your OpenAI key.');setState('idle');return null;}
-}
-
-// ═══════════════════════════════════════════════════════
-// GEMINI
-// ═══════════════════════════════════════════════════════
-async function callGemini(userText){
-  if(!EMBER_CONFIG.GEMINI_KEY) await loadConfig();
-  const key=EMBER_CONFIG.GEMINI_KEY||P.geminiKey?.trim();
-  if(!key){flash('No Gemini key — add it in Settings ⚙');setState('idle');return null;}
-  const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words.',
-    calm:'Be calm and focused. 2 sentences max.',direct:'Be direct. One sentence max. No filler.',
-    playful:'Be playful and light. Short, fun. Max 2 sentences.'};
-  const sys=`You are Ember, a warm AI companion. User's name: ${P.userName||'there'}.
-${toneMap[P.tone]||toneMap.warm}
-Speaking aloud via TTS — no markdown, no lists, no asterisks, no formatting of any kind.
-Keep responses under 40 words unless the user asks for more.`;
-  const history=(P.history||[]).slice(-10).slice(0,-1);
-  const contents=[...history.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]})),{role:'user',parts:[{text:userText}]}];
-  try{
-    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({systemInstruction:{parts:[{text:sys}]},contents,generationConfig:{maxOutputTokens:200}})});
-    if(!res.ok){const e=await res.json().catch(()=>({}));flash((e?.error?.message||`Error ${res.status}`).slice(0,90));setState('idle');return null;}
-    const d=await res.json();return d.candidates?.[0]?.content?.parts?.[0]?.text||null;
-  }catch{flash('Connection error — check your Gemini key.');setState('idle');return null;}
 }
 
 // ═══════════════════════════════════════════════════════
 // TTS STACK
 // ═══════════════════════════════════════════════════════
 async function speakText(text){
-  const googleKey=getGoogleKey();
-  if(googleKey){
-    const ok=await speakGoogle(text);
-    if(ok)return;
-    flash('Google TTS failed — using browser…',1800);
-  }
+  // Always try Google TTS via server proxy first
+  const ok=await speakGoogle(text);
+  if(ok)return;
+  // Fallback to browser TTS
   speakBrowser(text);
 }
 async function speakGoogle(text){
   try{
-    const key=getGoogleKey();
-    if(!key)return false;
-    const body={input:{text},voice:{languageCode:'en-US',name:P.googleVoice||EMBER_CONFIG.GOOGLE_VOICE},
-      audioConfig:{audioEncoding:'MP3',speakingRate:0.93,pitch:1.5,volumeGainDb:0}};
-    const res=await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${key}`,
-      {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const res=await fetch('/api/tts',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text,voice:P.googleVoice||EMBER_CONFIG.GOOGLE_VOICE,speakingRate:0.93,pitch:1.5})
+    });
     if(!res.ok)return false;
     const data=await res.json();if(!data.audioContent)return false;
     await playBase64Audio(data.audioContent);return true;
