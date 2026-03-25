@@ -838,6 +838,7 @@ const micBtn=document.getElementById('micBtn');
 // ═══════════════════════════════════════════════════════
 EYES.forEach(e=>applyEye(e,'idle',1,'idle'));
 morphCur='idle';
+
 function injectConfigKeys(){
   if(EMBER_CONFIG.ANTHROPIC_KEY) P.claudeKey=EMBER_CONFIG.ANTHROPIC_KEY;
   if(EMBER_CONFIG.GOOGLE_TTS_KEY){
@@ -848,16 +849,14 @@ function injectConfigKeys(){
 }
 
 (async()=>{
-  // Hide onboarding until config is ready
   document.getElementById('onboarding').style.opacity='0';
 
   await loadConfig();
 
-  // Inject keys into profile immediately — runs on every device, every load
+  // ALWAYS inject keys first — every device, every load, no exceptions
   injectConfigKeys();
   saveP();
 
-  // Fade in
   document.getElementById('onboarding').style.transition='opacity .4s ease';
   document.getElementById('onboarding').style.opacity='1';
 
@@ -915,9 +914,14 @@ function toggleVis(id,btnId){const i=document.getElementById(id),b=document.getE
 // ═══════════════════════════════════════════════════════
 function initMain(){
   updateUI();populateSettings();renderMem();renderChips();buildPts();startBlink();playGreet();initMicMode();updateEnginePill();
-  // In dev mode — hide API key fields from UI since keys are hardcoded
-  if(EMBER_CONFIG.MODE==='dev'){
+  // Hide API key fields if Vercel is providing them
+  if(EMBER_CONFIG.ANTHROPIC_KEY){
     document.querySelectorAll('.dev-hide').forEach(el=>el.style.display='none');
+  }
+  // Hide google key field in TTS card if key comes from Vercel
+  if(EMBER_CONFIG.GOOGLE_TTS_KEY){
+    const gKeyWrap=document.querySelector('#s-tts-cards .tts-card-key');
+    if(gKeyWrap) gKeyWrap.style.display='none';
   }
 }
 
@@ -1073,11 +1077,19 @@ Keep responses under 40 words unless the user asks for more.`;
 // TTS STACK: ElevenLabs → Google Neural2 → Browser
 // ═══════════════════════════════════════════════════════
 async function speakText(text){
-  const engine=P.ttsEngine||'google';
-  if(engine==='elevenlabs'&&P.elevenKey?.trim()&&P.elevenVoiceId?.trim()){
-    const ok=await speakElevenLabs(text);if(ok)return;flash('ElevenLabs failed — falling back…',1800);}
-  if((engine==='google'||engine==='elevenlabs')&&getGoogleKey()){
-    const ok=await speakGoogle(text);if(ok)return;flash('Google TTS failed — using browser…',1800);}
+  // Always try Google first if we have a key — ignores stale P.ttsEngine
+  const googleKey=getGoogleKey();
+  const elevenKey=P.elevenKey?.trim();
+  const elevenVoice=P.elevenVoiceId?.trim();
+
+  if(elevenKey&&elevenVoice&&P.ttsEngine==='elevenlabs'){
+    const ok=await speakElevenLabs(text);if(ok)return;
+    flash('ElevenLabs failed — trying Google…',1800);
+  }
+  if(googleKey){
+    const ok=await speakGoogle(text);if(ok)return;
+    flash('Google TTS failed — using browser…',1800);
+  }
   speakBrowser(text);
 }
 async function speakGoogle(text){
