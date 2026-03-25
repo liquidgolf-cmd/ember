@@ -52,8 +52,6 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
   .status-greeting{font-size:clamp(11px,1.8vh,15px);}
   .mic-btn{width:clamp(40px,6vh,52px);height:clamp(40px,6vh,52px);margin-top:1.5vh;font-size:clamp(16px,2.4vh,22px);}
   .waveform{margin-top:4px;}
-  .topic-chips{bottom:72px;}
-  .demo-controls{bottom:12px;}
 }
 
 /* EYES — SVG-based, no divs */
@@ -70,14 +68,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
   color:var(--text-dim);font-weight:300;opacity:0;animation:fadeUp .6s ease 1.1s forwards;}
 
 /* VOICE ENGINE PILL */
-.voice-engine{position:fixed;top:56px;left:50%;transform:translateX(-50%);
-  font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-dim);
-  padding:3px 12px;border:1px solid var(--border);border-radius:20px;
-  background:rgba(0,20,35,.6);backdrop-filter:blur(4px);z-index:45;
-  opacity:0;animation:fadeIn .5s ease 2s forwards;transition:color .4s,border-color .4s;}
-.voice-engine.google{color:rgba(100,210,140,.7);border-color:rgba(0,200,120,.25);}
-.voice-engine.eleven{color:rgba(200,140,255,.7);border-color:rgba(160,80,255,.25);}
-.voice-engine.browser{color:var(--text-dim);border-color:var(--border);}
+
 
 /* MIC BUTTON */
 .mic-btn{margin-top:3.5vh;width:clamp(52px,7vw,64px);height:clamp(52px,7vw,64px);
@@ -235,16 +226,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 .step-dot.active{background:var(--accent);box-shadow:0 0 8px rgba(0,220,255,.5);}
 
 /* TOPIC CHIPS */
-.topic-chips{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);
-  display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:80vw;z-index:40;opacity:0;transition:opacity .4s;}
-.topic-chips.visible{opacity:1;}
-.chip{font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:300;color:var(--text-dim);
-  padding:4px 12px;border:1px solid var(--border);border-radius:20px;background:rgba(0,30,50,.5);
-  backdrop-filter:blur(4px);cursor:pointer;transition:all .2s;white-space:nowrap;}
-.chip:hover{color:var(--accent);border-color:var(--border-h);}
-.cowork-badge{position:fixed;bottom:24px;right:20px;z-index:40;font-size:9px;letter-spacing:.25em;
-  text-transform:uppercase;color:var(--text-dim);opacity:0;animation:fadeIn .5s ease 3s forwards;
-  padding:4px 10px;border:1px solid var(--border);border-radius:20px;background:rgba(0,20,35,.6);}
+
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
@@ -372,7 +354,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
     <div class="icon-btn" title="Settings" onclick="togglePanel('settingsPanel')">⚙</div>
   </div>
 </div>
-<div class="voice-engine" id="voiceEnginePill">● Google Neural2</div>
+
 
 <!-- SCENE -->
 <div class="scene" id="scene">
@@ -446,8 +428,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 </div>
 
 <div class="transcript-bubble" id="tBubble"><span class="you-label">You said</span><span id="tText"></span></div>
-<div class="topic-chips" id="topicChips"></div>
-<div class="cowork-badge">⬡ cowork ready</div>
+
 
 <!-- SETTINGS PANEL -->
 <div class="panel" id="settingsPanel">
@@ -916,12 +897,10 @@ function toggleVis(id,btnId){const i=document.getElementById(id),b=document.getE
 // INIT
 // ═══════════════════════════════════════════════════════
 function initMain(){
-  updateUI();populateSettings();renderMem();renderChips();buildPts();startBlink();playGreet();initMicMode();updateEnginePill();
-  // Hide API key fields if Vercel is providing them
+  updateUI();populateSettings();renderMem();buildPts();startBlink();playGreet();initMicMode();
   if(EMBER_CONFIG.ANTHROPIC_KEY){
     document.querySelectorAll('.dev-hide').forEach(el=>el.style.display='none');
   }
-  // Hide google key field in TTS card if key comes from Vercel
   if(EMBER_CONFIG.GOOGLE_TTS_KEY){
     const gKeyWrap=document.querySelector('#s-tts-cards .tts-card-key');
     if(gKeyWrap) gKeyWrap.style.display='none';
@@ -936,12 +915,6 @@ function updateUI(){
   document.getElementById('modelBadge').textContent=ML[P.model]||'Claude';
 }
 function cycleModel(){const ms=Object.keys(ML);P.model=ms[(ms.indexOf(P.model)+1)%ms.length];saveP();updateUI();flash(`Switched to ${ML[P.model]}`);}
-function updateEnginePill(){
-  const pill=document.getElementById('voiceEnginePill');
-  const labels={google:'● Google Neural2',elevenlabs:'● ElevenLabs',browser:'● Browser TTS'};
-  pill.textContent=labels[P.ttsEngine]||labels.browser;
-  pill.className='voice-engine '+P.ttsEngine;
-}
 
 // ═══════════════════════════════════════════════════════
 // STATE — drives both UI class and eye morph
@@ -1045,7 +1018,7 @@ async function handleText(text){
   if(P.history.length>20)P.history=P.history.slice(-20);
   const words=text.trim().split(/\s+/);
   if(words.length>=3){const tp=words.slice(0,3).join(' ')+'…';if(!P.topics.length||!P.topics[0].startsWith(words[0])){P.topics.unshift(tp);if(P.topics.length>8)P.topics=P.topics.slice(0,8);}}
-  saveP();renderChips();
+  saveP();
   const reply=await callClaude(text);
   if(!reply)return;
   P.history.push({role:'assistant',content:reply});saveP();
@@ -1191,7 +1164,7 @@ function saveSettings(){
   P.tone=document.querySelector('#s-tones .tone-btn.selected')?.dataset.tone||'warm';
   P.listenMode=document.querySelector('#s-modes .listen-opt.selected')?.dataset.mode||'tap';
   P.ttsEngine=document.querySelector('#s-tts-cards .tts-card.selected')?.dataset.engine||'google';
-  saveP();updateUI();updateEnginePill();togglePanel('settingsPanel');initMicMode();
+  saveP();updateUI();togglePanel('settingsPanel');initMicMode();
   flash('Settings saved ✦');setState('happy');setTimeout(()=>setState('idle'),1800);
 }
 
@@ -1223,14 +1196,9 @@ function renderMem(){
   cb.textContent='Clear all memory';cb.onclick=clearMem;b.appendChild(cb);
 }
 function addTopic(){const i=document.getElementById('newT'),v=i.value.trim();if(!v)return;
-  P.topics=P.topics||[];if(!P.topics.includes(v)){P.topics.unshift(v);if(P.topics.length>8)P.topics=P.topics.slice(0,8);saveP();}renderMem();renderChips();i.value='';}
-function rmTopic(t){P.topics=(P.topics||[]).filter(x=>x!==t);saveP();renderMem();renderChips();}
+  P.topics=P.topics||[];if(!P.topics.includes(v)){P.topics.unshift(v);if(P.topics.length>8)P.topics=P.topics.slice(0,8);saveP();}renderMem();i.value='';}
+function rmTopic(t){P.topics=(P.topics||[]).filter(x=>x!==t);saveP();renderMem();}
 function clearMem(){if(!confirm("Clear all of Ember's memory?"))return;localStorage.removeItem(SK);location.reload();}
-function renderChips(){const w=document.getElementById('topicChips');w.innerHTML='';
-  if(!P.topics?.length){w.classList.remove('visible');return;}
-  P.topics.slice(0,5).forEach(t=>{const c=document.createElement('div');c.className='chip';c.textContent=t;
-    c.onclick=()=>flash(`"${t}" — want to pick up where we left off?`);w.appendChild(c);});
-  w.classList.add('visible');}
 
 // ═══════════════════════════════════════════════════════
 // PANELS
