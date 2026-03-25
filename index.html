@@ -1084,6 +1084,7 @@ Keep responses under 40 words unless the user asks for more.`;
 // GPT-4o
 // ═══════════════════════════════════════════════════════
 async function callGPT(userText){
+  if(!EMBER_CONFIG.OPENAI_KEY) await loadConfig();
   const key=EMBER_CONFIG.OPENAI_KEY||P.openaiKey?.trim();
   if(!key){flash('No OpenAI key — add it in Settings ⚙');setState('idle');return null;}
   const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words.',
@@ -1111,6 +1112,7 @@ Keep responses under 40 words unless the user asks for more.`;
 // GEMINI
 // ═══════════════════════════════════════════════════════
 async function callGemini(userText){
+  if(!EMBER_CONFIG.GEMINI_KEY) await loadConfig();
   const key=EMBER_CONFIG.GEMINI_KEY||P.geminiKey?.trim();
   if(!key){flash('No Gemini key — add it in Settings ⚙');setState('idle');return null;}
   const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words.',
