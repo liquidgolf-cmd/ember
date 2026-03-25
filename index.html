@@ -828,7 +828,7 @@ const scene=document.getElementById('scene');
 const sLabel=document.getElementById('sLabel'), sGreet=document.getElementById('sGreet');
 const SL={idle:'— idle —',listening:'listening...',thinking:'processing...',speaking:'speaking',happy:'^ _ ^',surprised:'! ! !'};
 let curState='idle', gTimer=null;
-let recog=null, isListening=false, alwaysOn=false, spaceDown=false, audioCtx=null, curSource=null;
+let recog=null, isListening=false, alwaysOn=false, spaceDown=false, audioCtx=null, curSource=null, iosAudio=null;
 const micBtn=document.getElementById('micBtn');
 
 // ═══════════════════════════════════════════════════════
@@ -1181,16 +1181,36 @@ async function speakElevenLabs(text){
     await playAudioUrl(url);URL.revokeObjectURL(url);return true;
   }catch(e){console.warn('ElevenLabs:',e);return false;}
 }
-function stopAudio(){if(curSource){try{curSource.stop();}catch{}curSource=null;}window.speechSynthesis?.cancel();}
+function stopAudio(){
+  if(curSource){try{curSource.stop();}catch{}curSource=null;}
+  if(iosAudio){try{iosAudio.pause();iosAudio.src='';}catch{}iosAudio=null;}
+  window.speechSynthesis?.cancel();
+}
 
-// Resume AudioContext on any user tap — required by iOS
+// iOS pre-created audio element — must be created during user gesture
+let iosAudio=null;
+function unlockAudio(){
+  try{
+    // Pre-create Audio element during gesture so iOS allows later playback
+    if(!iosAudio) iosAudio=new Audio();
+    iosAudio.load();
+    // Also unlock AudioContext for desktop
+    if(!audioCtx||audioCtx.state==='closed'){
+      audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    }
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    const buf=audioCtx.createBuffer(1,1,22050);
+    const src=audioCtx.createBufferSource();
+    src.buffer=buf;src.connect(audioCtx.destination);src.start(0);
+  }catch(e){}
+}
+
 function ensureAudioCtx(){
   unlockAudio();
   return audioCtx;
 }
 
 async function playBase64Audio(b64){
-  // On iOS, use Audio element with blob URL — more reliable than AudioContext
   const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
   if(isIOS){
     return new Promise(resolve=>{
@@ -1198,15 +1218,31 @@ async function playBase64Audio(b64){
         const bytes=atob(b64);
         const arr=new Uint8Array(bytes.length);
         for(let i=0;i<bytes.length;i++) arr[i]=bytes.charCodeAt(i);
-        const blob=new Blob([arr],{type:'audio/mp3'});
+        const blob=new Blob([arr],{type:'audio/mpeg'});
         const url=URL.createObjectURL(blob);
-        const audio=new Audio(url);
+        // Reuse the pre-unlocked audio element
+        const audio=iosAudio||new Audio();
+        iosAudio=audio;
+        audio.src=url;
         audio.playbackRate=0.93;
         setState('speaking');
         audio.onended=()=>{URL.revokeObjectURL(url);afterSpeak();resolve();};
-        audio.onerror=()=>{URL.revokeObjectURL(url);afterSpeak();resolve();};
-        audio.play().catch(()=>{URL.revokeObjectURL(url);speakBrowser(b64.slice(0,20));resolve();});
-      }catch(e){afterSpeak();resolve();}
+        audio.onerror=(e)=>{
+          console.warn('iOS audio error:',e);
+          URL.revokeObjectURL(url);
+          speakBrowser('');
+          resolve();
+        };
+        const playPromise=audio.play();
+        if(playPromise){
+          playPromise.catch(err=>{
+            console.warn('iOS play failed:',err);
+            URL.revokeObjectURL(url);
+            speakBrowser('');
+            resolve();
+          });
+        }
+      }catch(e){console.warn('iOS audio exception:',e);afterSpeak();resolve();}
     });
   }
   // Desktop — use AudioContext
