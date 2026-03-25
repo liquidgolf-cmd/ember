@@ -1090,10 +1090,15 @@ async function callProxy(userText,model){
 // TTS STACK
 // ═══════════════════════════════════════════════════════
 async function speakText(text){
-  // Try Google TTS first on all platforms
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  if(isIOS){
+    // iOS: use speech synthesis — triggered close to user gesture via unlock
+    speakBrowser(text);
+    return;
+  }
+  // Desktop: use Google TTS via server proxy
   const ok=await speakGoogle(text);
   if(ok)return;
-  // Fallback to browser speech synthesis
   speakBrowser(text);
 }
 async function speakGoogle(text){
@@ -1125,9 +1130,9 @@ async function playAudioUrl(url){
     audio.play().catch(()=>resolve());
   });
 }
-// iOS speech synthesis unlock — fire silent utterance on every mic tap
 function unlockSpeech(){
   if(!window.speechSynthesis) return;
+  // Queue a silent utterance to open the iOS audio session
   const utt=new SpeechSynthesisUtterance(' ');
   utt.volume=0.001;
   utt.rate=2;
@@ -1136,23 +1141,20 @@ function unlockSpeech(){
 
 function speakBrowser(text){
   if(!window.speechSynthesis){afterSpeak();return;}
-  // Small delay lets the silent unlock utterance finish first
-  setTimeout(()=>{
-    window.speechSynthesis.cancel();
-    const utt=new SpeechSynthesisUtterance(text);
-    const voices=window.speechSynthesis.getVoices();
-    const preferred=['Samantha','Karen','Moira','Ava','Serena','Google UK English Female','Microsoft Zira'];
-    const pick=voices.find(v=>preferred.some(p=>v.name.includes(p)))
-      ||voices.find(v=>v.lang.startsWith('en-')&&v.localService)
-      ||voices.find(v=>v.lang.startsWith('en'))
-      ||voices[0];
-    if(pick) utt.voice=pick;
-    utt.rate=0.92;utt.pitch=1.05;utt.volume=1;
-    utt.onstart=()=>setState('speaking');
-    utt.onend=()=>afterSpeak();
-    utt.onerror=()=>afterSpeak();
-    window.speechSynthesis.speak(utt);
-  }, 80);
+  const utt=new SpeechSynthesisUtterance(text);
+  const voices=window.speechSynthesis.getVoices();
+  const preferred=['Samantha','Karen','Moira','Ava','Serena','Google UK English Female','Microsoft Zira'];
+  const pick=voices.find(v=>preferred.some(p=>v.name.includes(p)))
+    ||voices.find(v=>v.lang.startsWith('en-')&&v.localService)
+    ||voices.find(v=>v.lang.startsWith('en'))
+    ||voices[0];
+  if(pick) utt.voice=pick;
+  utt.rate=0.92;utt.pitch=1.05;utt.volume=1;
+  utt.onstart=()=>setState('speaking');
+  utt.onend=()=>afterSpeak();
+  utt.onerror=()=>afterSpeak();
+  // Queue after the silent unlock utterance
+  window.speechSynthesis.speak(utt);
 }
 if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>{};
 function afterSpeak(){setState('idle');if(P.listenMode==='always'&&alwaysOn)setTimeout(startAlways,600);}
