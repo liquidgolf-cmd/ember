@@ -2,7 +2,7 @@
 // Caches the shell so the UI loads instantly even offline
 // Voice + AI still needs internet
 
-const CACHE = 'ember-v1';
+const CACHE = 'ember-v3';
 const SHELL = ['/'];
 
 self.addEventListener('install', e => {

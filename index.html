@@ -984,8 +984,25 @@ document.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat&&P.listen
 document.addEventListener('keyup',e=>{if(e.code==='Space'&&P.listenMode==='tap'){e.preventDefault();spaceDown=false;if(isListening)stopListen();}});
 
 function handleMic(){
+  // Unlock AudioContext immediately on user gesture — critical for iOS
+  unlockAudio();
   if(P.listenMode==='always'){alwaysOn=!alwaysOn;if(!alwaysOn&&recog){recog.stop();setState('idle');showWave(false);}else startAlways();return;}
   if(isListening)stopListen();else startListen();
+}
+
+// iOS requires AudioContext to be created AND a silent buffer played
+// during a direct user gesture — do this on every mic tap
+function unlockAudio(){
+  try{
+    if(!audioCtx||audioCtx.state==='closed'){
+      audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    }
+    if(audioCtx.state==='suspended') audioCtx.resume();
+    // Play a silent buffer to fully unlock on iOS
+    const buf=audioCtx.createBuffer(1,1,22050);
+    const src=audioCtx.createBufferSource();
+    src.buffer=buf;src.connect(audioCtx.destination);src.start(0);
+  }catch(e){}
 }
 function startListen(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -1058,7 +1075,7 @@ Keep responses under 40 words unless the user asks for more.`;
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:sys,messages:msgs})});
-    if(!res.ok){const e=await res.json().catch(()=>({}));flash((e?.error?.message||`Error ${res.status}`).slice(0,90));setState('idle');return null;}
+    if(!res.ok){const e=await res.json().catch(()=>({}));const msg=res.status===529||res.status===503?'Claude is overloaded — try again in a moment.':(e?.error?.message||`Error ${res.status}`).slice(0,90);flash(msg);setState('idle');return null;}
     const d=await res.json();return d.content?.[0]?.text||null;
   }catch{flash('Connection error — check your Claude key.');setState('idle');return null;}
 }
@@ -1166,14 +1183,9 @@ function stopAudio(){if(curSource){try{curSource.stop();}catch{}curSource=null;}
 
 // Resume AudioContext on any user tap — required by iOS
 function ensureAudioCtx(){
-  if(!audioCtx||audioCtx.state==='closed'){
-    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  }
-  if(audioCtx.state==='suspended') audioCtx.resume();
+  unlockAudio();
   return audioCtx;
 }
-document.addEventListener('touchstart',()=>{if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();},{passive:true});
-document.addEventListener('click',()=>{if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();},{passive:true});
 
 async function playBase64Audio(b64){
   // On iOS, use Audio element with blob URL — more reliable than AudioContext
