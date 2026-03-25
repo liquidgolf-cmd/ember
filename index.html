@@ -981,37 +981,29 @@ function handleMic(){
 
 function startListen(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){flash("❌ Speech API not available on this browser.");return;}
+  if(!SR){flash("Voice requires Chrome or Safari.");return;}
   stopAudio();isListening=true;setState('listening');showWave(true);micBtn.classList.add('active');hideBubble();
-  flash('🎙 listening…',5000);
   recog=new SR();recog.lang='en-US';recog.continuous=false;recog.interimResults=true;
   recog.onresult=e=>{
     const t=Array.from(e.results).map(r=>r[0].transcript).join('');
     showBubble(t);
-    flash('📝 heard: '+t.slice(0,30),3000);
     if(e.results[e.results.length-1].isFinal)handleText(t);
   };
   recog.onerror=err=>{
     isListening=false;setState('idle');showWave(false);micBtn.classList.remove('active');
     const errs={
-      'not-allowed':'❌ Mic blocked — allow microphone in browser settings.',
-      'permission-denied':'❌ Mic permission denied.',
+      'not-allowed':'Mic blocked — allow microphone in browser settings.',
+      'permission-denied':'Mic permission denied.',
       'no-speech':'No speech detected — try again.',
-      'audio-capture':'❌ No microphone found.',
-      'network':'❌ Network error during speech recognition.',
-      'service-not-allowed':'❌ Speech service blocked — needs HTTPS.',
-      'aborted':'aborted'
+      'audio-capture':'No microphone found.',
+      'network':'Network error during speech recognition.',
+      'service-not-allowed':'Speech service blocked — needs HTTPS.',
+      'aborted':null
     };
-    const msg=errs[err.error]||('❌ Error: '+err.error);
-    if(msg!=='aborted')flash(msg,5000);
+    const msg=errs[err.error];if(msg)flash(msg,4000);
   };
   recog.onend=()=>{isListening=false;micBtn.classList.remove('active');showWave(false);if(curState==='listening')setState('idle');};
-  try{
-    recog.start();
-    flash('🎙 mic started…',3000);
-  }catch(e){
-    flash('❌ Could not start mic: '+e.message,5000);
-  }
+  try{ recog.start(); }catch(e){ flash('Could not start mic: '+e.message,4000); }
 }
 function stopListen(){if(recog)recog.stop();isListening=false;showWave(false);micBtn.classList.remove('active');}
 function startAlways(){
@@ -1033,7 +1025,6 @@ function startAlways(){
 
 async function handleText(text){
   if(!text.trim())return;
-  flash('🤔 thinking…',8000);
   showWave(false);showBubble(text);setState('thinking');
   P.history=P.history||[];P.history.push({role:'user',content:text});
   if(P.history.length>20)P.history=P.history.slice(-20);
@@ -1090,11 +1081,10 @@ async function callProxy(userText,model){
 // TTS STACK
 // ═══════════════════════════════════════════════════════
 async function speakText(text){
-  flash('🔊 speaking…',3000);
-  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
-  if(isIOS){ speakBrowser(text); return; }
+  // Try Google TTS first on all platforms
   const ok=await speakGoogle(text);
   if(ok)return;
+  // Fallback to browser speech synthesis
   speakBrowser(text);
 }
 async function speakGoogle(text){
