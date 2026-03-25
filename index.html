@@ -7,19 +7,19 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap');
 :root{
-  --bg:#080604;--surface2:rgba(20,14,6,.94);
-  --accent:#e89030;--accent2:#ffd060;
-  --text:rgba(240,210,160,.75);--text-dim:rgba(160,120,70,.45);--text-bright:rgba(255,240,200,.95);
-  --border:rgba(200,130,40,.14);--border-h:rgba(220,160,60,.32);
+  --bg:#060a0c;--surface2:rgba(8,18,22,.94);
+  --accent:#30d8c8;--accent2:#ffd060;
+  --text:rgba(160,230,235,.75);--text-dim:rgba(80,150,160,.45);--text-bright:rgba(210,248,250,.95);
+  --border:rgba(0,200,210,.14);--border-h:rgba(0,220,230,.32);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-family:'Raleway',sans-serif;color:var(--text);}
 
 .aurora{position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 90% 55% at 50% 105%,rgba(80,40,10,.32) 0%,transparent 70%),
-             radial-gradient(ellipse 60% 45% at 15% 70%,rgba(60,30,5,.20) 0%,transparent 60%),
-             radial-gradient(ellipse 55% 40% at 85% 30%,rgba(70,35,8,.18) 0%,transparent 60%),
-             radial-gradient(ellipse 40% 30% at 50% 50%,rgba(40,20,4,.12) 0%,transparent 70%);
+  background:radial-gradient(ellipse 90% 55% at 50% 105%,rgba(0,80,90,.28) 0%,transparent 70%),
+             radial-gradient(ellipse 60% 45% at 15% 70%,rgba(0,60,80,.18) 0%,transparent 60%),
+             radial-gradient(ellipse 55% 40% at 85% 30%,rgba(60,30,10,.16) 0%,transparent 60%),
+             radial-gradient(ellipse 40% 30% at 50% 50%,rgba(0,40,50,.10) 0%,transparent 70%);
   animation:aurora 14s ease-in-out infinite alternate;}
 @keyframes aurora{0%{opacity:.7;transform:scale(1)}100%{opacity:1;transform:scale(1.05) translateY(-8px)}}
 .scanlines{position:fixed;inset:0;pointer-events:none;z-index:1;
@@ -359,73 +359,59 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 <div class="scene" id="scene">
   <div class="companion-name" id="cName">Ember</div>
 
-  <!-- SVG EYES — the whole face is one SVG -->
-  <svg id="emberEyes" viewBox="0 0 420 240" onclick="handleMic()" style="cursor:pointer;overflow:visible;width:clamp(340px,75vw,680px);height:clamp(190px,32vw,370px)">
+  <!-- SVG EYES -->
+  <svg id="emberEyes" viewBox="0 0 440 220" onclick="handleMic()" style="cursor:pointer;overflow:visible;width:clamp(340px,78vw,700px);height:clamp(180px,30vw,360px)">
     <defs>
-      <!-- Orb body: warm dark amber-brown depth -->
-      <radialGradient id="gOrb" cx="50%" cy="36%" r="58%">
-        <stop offset="0%"   stop-color="#2a1a08" stop-opacity=".98"/>
-        <stop offset="45%"  stop-color="#180e04"/>
-        <stop offset="100%" stop-color="#080402"/>
+      <radialGradient id="gSclera" cx="50%" cy="40%" r="60%">
+        <stop offset="0%"   stop-color="#dff4f8"/>
+        <stop offset="55%"  stop-color="#b8d8e8"/>
+        <stop offset="100%" stop-color="#88b0c0"/>
       </radialGradient>
-      <!-- Core light: hot white-yellow center bleeding to amber-teal -->
-      <radialGradient id="gCore" cx="40%" cy="36%" r="55%">
-        <stop offset="0%"   stop-color="#ffffff"/>
-        <stop offset="15%"  stop-color="#fff8c0"/>
-        <stop offset="38%"  stop-color="#ffcc44"/>
-        <stop offset="65%"  stop-color="#e07820"/>
-        <stop offset="100%" stop-color="transparent"/>
+      <radialGradient id="gIris" cx="42%" cy="38%" r="55%">
+        <stop offset="0%"   stop-color="#80dce8"/>
+        <stop offset="28%"  stop-color="#30b0cc"/>
+        <stop offset="62%"  stop-color="#1278a0"/>
+        <stop offset="100%" stop-color="#083858"/>
       </radialGradient>
-      <!-- Mid iris fill: warm amber pool behind the iris ring -->
-      <radialGradient id="gIris" cx="50%" cy="42%" r="52%">
-        <stop offset="0%"   stop-color="#d4780a" stop-opacity=".55"/>
-        <stop offset="55%"  stop-color="#8a3e08" stop-opacity=".35"/>
-        <stop offset="100%" stop-color="transparent"/>
-      </radialGradient>
-      <!-- Outer glow: warm amber-orange halo — the Loona signature -->
       <radialGradient id="gGlowL" cx="50%" cy="50%" r="50%">
-        <stop offset="0%"   stop-color="#e88020" stop-opacity=".38"/>
-        <stop offset="45%"  stop-color="#c05010" stop-opacity=".14"/>
-        <stop offset="100%" stop-color="#e88020" stop-opacity="0"/>
+        <stop offset="0%"   stop-color="#20c8d8" stop-opacity=".30"/>
+        <stop offset="100%" stop-color="transparent"/>
       </radialGradient>
       <radialGradient id="gGlowR" cx="50%" cy="50%" r="50%">
-        <stop offset="0%"   stop-color="#e88020" stop-opacity=".38"/>
-        <stop offset="45%"  stop-color="#c05010" stop-opacity=".14"/>
-        <stop offset="100%" stop-color="#e88020" stop-opacity="0"/>
+        <stop offset="0%"   stop-color="#20c8d8" stop-opacity=".30"/>
+        <stop offset="100%" stop-color="transparent"/>
       </radialGradient>
       <clipPath id="cpL"><path id="cpLp" d=""/></clipPath>
       <clipPath id="cpR"><path id="cpRp" d=""/></clipPath>
     </defs>
 
-    <!-- LEFT EYE — cx=105, cy=120 -->
-    <ellipse id="glowL" cx="105" cy="120" rx="108" ry="114" fill="url(#gGlowL)"/>
+    <!-- LEFT EYE cx=138, cy=110 -->
+    <ellipse id="glowL" cx="138" cy="110" rx="96" ry="86" fill="url(#gGlowL)"/>
+    <path id="borderL" d="" fill="none" stroke="#080e12" stroke-width="8" stroke-linejoin="round"/>
     <g clip-path="url(#cpL)">
-      <path id="fillL" d="" fill="url(#gOrb)"/>
-      <ellipse id="irisPoolL" cx="105" cy="120" rx="36" ry="36" fill="url(#gIris)"/>
+      <path id="fillL" d="" fill="url(#gSclera)"/>
       <g id="pupilGroupL">
-        <ellipse id="irisL" cx="105" cy="120" rx="26" ry="26" fill="none" stroke="rgba(220,130,30,.7)" stroke-width="10" stroke-dasharray="6 4"/>
-        <ellipse id="pupilL" cx="105" cy="120" rx="12" ry="12" fill="#1a0c04"/>
-        <ellipse id="coreL"  cx="105" cy="117" rx="9"  ry="9"  fill="url(#gCore)"/>
-        <ellipse cx="91" cy="104" rx="5" ry="4" fill="rgba(255,248,220,.65)" transform="rotate(-18,91,104)"/>
-        <ellipse cx="118" cy="108" rx="2.5" ry="2" fill="rgba(255,240,180,.35)" transform="rotate(10,118,108)"/>
+        <ellipse id="irisL"  cx="138" cy="112" rx="32" ry="32" fill="url(#gIris)"/>
+        <ellipse id="pupilL" cx="138" cy="112" rx="15" ry="15" fill="#060c10"/>
+        <ellipse cx="126" cy="100" rx="6" ry="5.5" fill="white" opacity=".92"/>
+        <ellipse cx="148" cy="105" rx="2.2" ry="2"  fill="white" opacity=".5"/>
       </g>
     </g>
-    <path id="rimL" d="" fill="none" stroke="rgba(200,100,20,.35)" stroke-width="2"/>
+    <path id="rimL" d="" fill="none" stroke="#080e12" stroke-width="6" stroke-linejoin="round"/>
 
-    <!-- RIGHT EYE — cx=315, cy=120 -->
-    <ellipse id="glowR" cx="315" cy="120" rx="108" ry="114" fill="url(#gGlowR)"/>
+    <!-- RIGHT EYE cx=302, cy=110 -->
+    <ellipse id="glowR" cx="302" cy="110" rx="96" ry="86" fill="url(#gGlowR)"/>
+    <path id="borderR" d="" fill="none" stroke="#080e12" stroke-width="8" stroke-linejoin="round"/>
     <g clip-path="url(#cpR)">
-      <path id="fillR" d="" fill="url(#gOrb)"/>
-      <ellipse id="irisPoolR" cx="315" cy="120" rx="36" ry="36" fill="url(#gIris)"/>
+      <path id="fillR" d="" fill="url(#gSclera)"/>
       <g id="pupilGroupR">
-        <ellipse id="irisR" cx="315" cy="120" rx="26" ry="26" fill="none" stroke="rgba(220,130,30,.7)" stroke-width="10" stroke-dasharray="6 4"/>
-        <ellipse id="pupilR" cx="315" cy="120" rx="12" ry="12" fill="#1a0c04"/>
-        <ellipse id="coreR"  cx="315" cy="117" rx="9"  ry="9"  fill="url(#gCore)"/>
-        <ellipse cx="301" cy="104" rx="5" ry="4" fill="rgba(255,248,220,.65)" transform="rotate(-18,301,104)"/>
-        <ellipse cx="328" cy="108" rx="2.5" ry="2" fill="rgba(255,240,180,.35)" transform="rotate(10,328,108)"/>
+        <ellipse id="irisR"  cx="302" cy="112" rx="32" ry="32" fill="url(#gIris)"/>
+        <ellipse id="pupilR" cx="302" cy="112" rx="15" ry="15" fill="#060c10"/>
+        <ellipse cx="290" cy="100" rx="6" ry="5.5" fill="white" opacity=".92"/>
+        <ellipse cx="312" cy="105" rx="2.2" ry="2"  fill="white" opacity=".5"/>
       </g>
     </g>
-    <path id="rimR" d="" fill="none" stroke="rgba(200,100,20,.35)" stroke-width="2"/>
+    <path id="rimR" d="" fill="none" stroke="#080e12" stroke-width="6" stroke-linejoin="round"/>
   </svg>
 
   <div class="status-line">
@@ -560,40 +546,53 @@ function saveP(){localStorage.setItem(SK,JSON.stringify(P));}
 let P=loadP();
 
 // ═══════════════════════════════════════════════════════
-// SVG EYE MORPH SYSTEM
+// SVG EYE MORPH SYSTEM — squirrel-eye anatomy
+// Wide horizontal oval, sclera shows, thick dark border,
+// inner corner droop, teal iris, sharp specular dot
 // ═══════════════════════════════════════════════════════
 const EYES=[
-  {cx:105, cy:120, fill:'fillL',rim:'rimL',cpEl:'cpLp',iris:'irisL',pupil:'pupilL',core:'coreL',glow:'glowL'},
-  {cx:315, cy:120, fill:'fillR',rim:'rimR',cpEl:'cpRp',iris:'irisR',pupil:'pupilR',core:'coreR',glow:'glowR'},
+  {cx:138, cy:110, fill:'fillL', border:'borderL', rim:'rimL', cpEl:'cpLp',
+   iris:'irisL', pupil:'pupilL', glow:'glowL'},
+  {cx:302, cy:110, fill:'fillR', border:'borderR', rim:'rimR', cpEl:'cpRp',
+   iris:'irisR', pupil:'pupilR', glow:'glowR'},
 ];
 
-// Generate eye path from state parameters — all shapes close smoothly
+// Generate wide-oval eye path with inner corner droop
 function eyePath(cx,cy,state){
   const S={
-    idle:      {t:cy-82, b:cy+82, hw:66,  tc:cy-32,bc:cy+32, happyBot:false},
-    listening: {t:cy-98, b:cy+98, hw:78,  tc:cy-42,bc:cy+42, happyBot:false},
-    thinking:  {t:cy-58, b:cy+80, hw:62,  tc:cy-20,bc:cy+34, happyBot:false},
-    speaking:  {t:cy-76, b:cy+76, hw:66,  tc:cy-28,bc:cy+28, happyBot:false},
-    surprised: {t:cy-108,b:cy+108,hw:90,  tc:cy-48,bc:cy+48, happyBot:false},
-    happy:     {t:cy-82, b:cy+26, hw:74,  tc:cy-34,bc:cy+54, happyBot:true},
-    blink:     {t:cy-5,  b:cy+5,  hw:66,  tc:cy,   bc:cy,    happyBot:false},
+    idle:      {hw:82, hh:58, tOff:-8,  bOff:6,  droop:8},
+    listening: {hw:90, hh:70, tOff:-6,  bOff:4,  droop:5},
+    thinking:  {hw:78, hh:44, tOff:10,  bOff:8,  droop:4},
+    speaking:  {hw:82, hh:54, tOff:-4,  bOff:5,  droop:6},
+    surprised: {hw:96, hh:82, tOff:-10, bOff:4,  droop:4},
+    happy:     {hw:84, hh:34, tOff:0,   bOff:-24,droop:0},
+    blink:     {hw:82, hh:4,  tOff:0,   bOff:0,  droop:0},
+    browRaise: {hw:86, hh:72, tOff:-18, bOff:5,  droop:6},
+    skeptic:   {hw:76, hh:42, tOff:12,  bOff:8,  droop:3},
+    sleepy:    {hw:80, hh:40, tOff:14,  bOff:8,  droop:10},
+    sad:       {hw:80, hh:52, tOff:6,   bOff:8,  droop:18},
   };
-  const p=S[state]||S.idle;
-  const l=cx-p.hw, r=cx+p.hw;
-  if(p.happyBot){
-    return `M${cx},${p.t} C${r},${p.t} ${r},${p.tc} ${r},${cy} C${r},${p.bc} ${cx+26},${p.b} ${cx},${p.b} C${cx-26},${p.b} ${l},${p.bc} ${l},${cy} C${l},${p.tc} ${l},${p.t} ${cx},${p.t}Z`;
+  const s=S[state]||S.idle;
+  const t=cy-s.hh+s.tOff, b=cy+s.hh+s.bOff;
+  const l=cx-s.hw, r=cx+s.hw, d=s.droop;
+  if(state==='happy'){
+    return `M${cx},${t} C${r},${t} ${r},${cy-10} ${r},${cy} C${r},${cy+20} ${cx+22},${b} ${cx},${b} C${cx-22},${b} ${l},${cy+20} ${l},${cy} C${l},${cy-10} ${l},${t} ${cx},${t}Z`;
   }
-  return `M${cx},${p.t} C${r},${p.t} ${r},${p.tc} ${r},${cy} C${r},${p.bc} ${r},${p.b} ${cx},${p.b} C${l},${p.b} ${l},${p.bc} ${l},${cy} C${l},${p.tc} ${l},${p.t} ${cx},${p.t}Z`;
+  return `M${cx},${t} C${r},${t} ${r},${cy-s.hh*0.4} ${r},${cy} C${r},${cy+s.hh*0.55} ${r},${b} ${cx},${b} C${l},${b} ${l},${cy+s.hh*0.55+d} ${l},${cy+d*0.3} C${l},${cy-s.hh*0.4} ${l},${t} ${cx},${t}Z`;
 }
 
 const eyeSizes={
-  idle:      {iris:46, pupil:22, core:17, glowRx:108,glowRy:114,cyOff:0},
-  listening: {iris:56, pupil:30, core:22, glowRx:128,glowRy:136,cyOff:0},
-  thinking:  {iris:40, pupil:18, core:14, glowRx:100,glowRy:108,cyOff:10},
-  speaking:  {iris:44, pupil:22, core:17, glowRx:106,glowRy:112,cyOff:0},
-  surprised: {iris:66, pupil:40, core:28, glowRx:148,glowRy:158,cyOff:0},
-  happy:     {iris:38, pupil:18, core:15, glowRx:112,glowRy:88, cyOff:-10},
-  blink:     {iris:5,  pupil:3,  core:2,  glowRx:108,glowRy:28, cyOff:0},
+  idle:      {iris:32, pupil:15, glowRx:96,  glowRy:86,  cyOff:2},
+  listening: {iris:38, pupil:19, glowRx:110, glowRy:100, cyOff:0},
+  thinking:  {iris:28, pupil:13, glowRx:88,  glowRy:78,  cyOff:8},
+  speaking:  {iris:30, pupil:14, glowRx:94,  glowRy:84,  cyOff:2},
+  surprised: {iris:44, pupil:24, glowRx:124, glowRy:114, cyOff:0},
+  happy:     {iris:24, pupil:11, glowRx:100, glowRy:72,  cyOff:-8},
+  blink:     {iris:3,  pupil:2,  glowRx:96,  glowRy:24,  cyOff:0},
+  browRaise: {iris:36, pupil:17, glowRx:106, glowRy:98,  cyOff:-6},
+  skeptic:   {iris:26, pupil:12, glowRx:86,  glowRy:76,  cyOff:8},
+  sleepy:    {iris:25, pupil:11, glowRx:88,  glowRy:76,  cyOff:10},
+  sad:       {iris:30, pupil:14, glowRx:92,  glowRy:84,  cyOff:6},
 };
 
 function lerpN(a,b,t){return a+(b-a)*t;}
@@ -615,47 +614,33 @@ function applyEye(eye,toState,t,fromState){
   const fromSz=eyeSizes[fromState||toState]||eyeSizes.idle;
   const iris=lerpN(fromSz.iris,toSz.iris,t);
   const pupil=lerpN(fromSz.pupil,toSz.pupil,t);
-  const core=lerpN(fromSz.core,toSz.core,t);
+  const cyOff=lerpN(fromSz.cyOff,toSz.cyOff,t);
   const glowRx=lerpN(fromSz.glowRx,toSz.glowRx,t);
   const glowRy=lerpN(fromSz.glowRy,toSz.glowRy,t);
-  const cyOff=lerpN(fromSz.cyOff,toSz.cyOff,t);
 
   document.getElementById(eye.fill).setAttribute('d',path);
+  document.getElementById(eye.border).setAttribute('d',path);
   document.getElementById(eye.rim).setAttribute('d',path);
   document.getElementById(eye.cpEl).setAttribute('d',path);
   document.getElementById(eye.glow).setAttribute('rx',glowRx);
   document.getElementById(eye.glow).setAttribute('ry',glowRy);
 
-  // Scale iris pool to match iris size
-  const poolId=eye.iris.replace('iris','irisPool');
-  const poolEl=document.getElementById(poolId);
-  if(poolEl){
-    poolEl.setAttribute('rx',iris*1.1);
-    poolEl.setAttribute('ry',toState==='happy'?iris*.7:iris*1.1);
-    poolEl.setAttribute('cy',eye.cy+cyOff);
-  }
-
+  const irisRy=toState==='happy'?iris*.55:iris;
   const irisEl=document.getElementById(eye.iris);
-  const irisRy=toState==='happy'?iris*.6:iris;
   irisEl.setAttribute('rx',iris); irisEl.setAttribute('ry',irisRy);
-  irisEl.setAttribute('cy',eye.cy+cyOff);
+  irisEl.setAttribute('cx',eye.cx); irisEl.setAttribute('cy',eye.cy+cyOff);
 
+  const pupilRy=toState==='happy'?pupil*.55:pupil;
   const pupilEl=document.getElementById(eye.pupil);
-  const pupilRy=toState==='happy'?pupil*.65:pupil;
   pupilEl.setAttribute('rx',pupil); pupilEl.setAttribute('ry',pupilRy);
-  pupilEl.setAttribute('cy',eye.cy+cyOff);
-
-  const coreEl=document.getElementById(eye.core);
-  const coreRy=toState==='happy'?core*.65:core;
-  coreEl.setAttribute('rx',core); coreEl.setAttribute('ry',coreRy);
-  coreEl.setAttribute('cy',eye.cy-3+cyOff);
+  pupilEl.setAttribute('cx',eye.cx); pupilEl.setAttribute('cy',eye.cy+cyOff);
 }
 
-let morphAnim=null, morphFrom='idle', morphCur='idle';
+let morphAnim=null, morphCur='idle';
 
 function morphTo(toState,dur,easeFn,cb){
   if(morphAnim)cancelAnimationFrame(morphAnim);
-  const from=morphCur;
+  const from=morphCur.split('|')[0]||'idle';
   const start=performance.now();
   function frame(now){
     const raw=Math.min((now-start)/dur,1);
@@ -667,25 +652,91 @@ function morphTo(toState,dur,easeFn,cb){
   morphAnim=requestAnimationFrame(frame);
 }
 
+function morphAsym(leftState,rightState,dur,easeFn,cb){
+  if(morphAnim)cancelAnimationFrame(morphAnim);
+  const from=morphCur.split('|')[0]||'idle';
+  const start=performance.now();
+  function frame(now){
+    const raw=Math.min((now-start)/dur,1);
+    const t=easeFn(raw);
+    applyEye(EYES[0],leftState,t,from);
+    applyEye(EYES[1],rightState,t,from);
+    if(raw<1){morphAnim=requestAnimationFrame(frame);}
+    else{morphCur=leftState+'|'+rightState;if(cb)cb();}
+  }
+  morphAnim=requestAnimationFrame(frame);
+}
+
+function doExpression(name,returnTo){
+  const prev=returnTo||(morphCur.split('|')[0])||'idle';
+  switch(name){
+    case 'winkL':
+      morphAsym('blink','idle',75,easeIn,()=>{setTimeout(()=>morphTo(prev,150,easeOut),340);}); break;
+    case 'winkR':
+      morphAsym('idle','blink',75,easeIn,()=>{setTimeout(()=>morphTo(prev,150,easeOut),340);}); break;
+    case 'browL':
+      morphAsym('browRaise','idle',260,easeIO,()=>{setTimeout(()=>morphTo(prev,300,easeIO),1200);}); break;
+    case 'browR':
+      morphAsym('idle','browRaise',260,easeIO,()=>{setTimeout(()=>morphTo(prev,300,easeIO),1200);}); break;
+    case 'browBoth':
+      morphTo('browRaise',260,easeIO,()=>{setTimeout(()=>morphTo(prev,300,easeIO),1200);}); break;
+    case 'skeptical':
+      morphAsym('skeptic','idle',280,easeIO,()=>{setTimeout(()=>morphTo(prev,300,easeIO),1400);}); break;
+    case 'sleepy':
+      morphTo('sleepy',400,easeIO,()=>{setTimeout(()=>morphTo(prev,350,easeIO),2000);}); break;
+    case 'sad':
+      morphTo('sad',350,easeIO,()=>{setTimeout(()=>morphTo(prev,350,easeIO),2200);}); break;
+    case 'excited':
+      morphTo('surprised',120,easeOut,()=>{setTimeout(()=>morphTo(prev,400,easeIO),600);}); break;
+  }
+}
+
 function doBlink(){
   if(['surprised'].includes(morphCur))return;
-  const prev=morphCur;
-  morphTo('blink',70,easeIn,()=>{
-    setTimeout(()=>morphTo(prev,140,easeOut),28);
-  });
+  const prev=morphCur.split('|')[0]||'idle';
+  const from=prev;
+  // Left eye
+  const s1=performance.now();
+  if(morphAnim)cancelAnimationFrame(morphAnim);
+  function closeL(now){
+    const raw=Math.min((now-s1)/72,1);
+    applyEye(EYES[0],'blink',easeIn(raw),from);
+    if(raw<1)requestAnimationFrame(closeL);
+    else setTimeout(()=>{
+      const s2=performance.now();
+      function openL(n){const t2=Math.min((n-s2)/145,1);applyEye(EYES[0],prev,easeOut(t2),'blink');if(t2<1)requestAnimationFrame(openL);else morphCur=prev;}
+      requestAnimationFrame(openL);
+    },26);
+  }
+  requestAnimationFrame(closeL);
+  // Right eye follows 45-80ms later
+  setTimeout(()=>{
+    const s3=performance.now();
+    function closeR(now){
+      const raw=Math.min((now-s3)/72,1);
+      applyEye(EYES[1],'blink',easeIn(raw),from);
+      if(raw<1)requestAnimationFrame(closeR);
+      else setTimeout(()=>{
+        const s4=performance.now();
+        function openR(n){const t2=Math.min((n-s4)/145,1);applyEye(EYES[1],prev,easeOut(t2),'blink');if(t2<1)requestAnimationFrame(openR);}
+        requestAnimationFrame(openR);
+      },26);
+    }
+    requestAnimationFrame(closeR);
+  },45+Math.random()*35);
 }
 
 // ═══════════════════════════════════════════════════════
-// BREATHING PULSE — idle glow breathe
+// BREATHING PULSE
 // ═══════════════════════════════════════════════════════
 let breathPhase=0;
 function breathe(){
   breathPhase+=0.018;
   if(morphCur==='idle'){
-    const s=0.96+Math.sin(breathPhase)*0.04;
+    const s=0.97+Math.sin(breathPhase)*0.03;
     EYES.forEach(e=>{
-      const g=document.getElementById(e.glow);
-      g.setAttribute('rx',108*s); g.setAttribute('ry',114*s);
+      document.getElementById(e.glow).setAttribute('rx',96*s);
+      document.getElementById(e.glow).setAttribute('ry',86*s);
     });
   }
   requestAnimationFrame(breathe);
@@ -693,13 +744,13 @@ function breathe(){
 requestAnimationFrame(breathe);
 
 // ═══════════════════════════════════════════════════════
-// SPEAKING PULSE — eyes squeeze slightly with speech rhythm
+// SPEAKING PULSE
 // ═══════════════════════════════════════════════════════
 let speakPhase=0;
 function speakPulse(){
   if(morphCur==='speaking'){
     speakPhase+=0.11;
-    const sq=1+Math.sin(speakPhase)*0.03;
+    const sq=1+Math.sin(speakPhase)*0.025;
     document.getElementById('emberEyes').style.transform=`scaleY(${sq})`;
   } else {
     document.getElementById('emberEyes').style.transform='';
@@ -710,49 +761,45 @@ function speakPulse(){
 requestAnimationFrame(speakPulse);
 
 // ═══════════════════════════════════════════════════════
-// PUPIL TRACKING
-// Moves a <g> wrapper via transform translate — never
-// touches cx/cy so it doesn't fight the morph system.
-// Clamped to a small radius so pupils stay inside the eye.
+// PUPIL TRACKING — direct cx/cy on iris+pupil elements
 // ═══════════════════════════════════════════════════════
 document.addEventListener('mousemove',e=>trackPupils(e.clientX,e.clientY));
 document.addEventListener('touchmove',e=>trackPupils(e.touches[0].clientX,e.touches[0].clientY),{passive:true});
 
-// Target offsets — smoothly interpolated each frame
-const pupilTarget={L:{x:0,y:0}, R:{x:0,y:0}};
-const pupilCurrent={L:{x:0,y:0}, R:{x:0,y:0}};
+const pupilTarget={L:{x:0,y:0},R:{x:0,y:0}};
+const pupilCurrent={L:{x:0,y:0},R:{x:0,y:0}};
 
 function trackPupils(mx,my){
-  if(['thinking','blink'].includes(morphCur)) return;
+  if(['thinking','blink'].includes(morphCur))return;
   const svgEl=document.getElementById('emberEyes');
   const rect=svgEl.getBoundingClientRect();
-  // Convert screen coords to SVG viewBox coords
-  const scaleX=420/rect.width, scaleY=240/rect.height;
+  const scaleX=440/rect.width, scaleY=220/rect.height;
   const svgX=(mx-rect.left)*scaleX, svgY=(my-rect.top)*scaleY;
-
   EYES.forEach((eye,i)=>{
     const key=i===0?'L':'R';
     const dx=svgX-eye.cx, dy=svgY-eye.cy;
     const angle=Math.atan2(dy,dx);
-    // Max travel: 6px horizontal, 4px vertical — bigger eyes need slightly more travel
-    const maxX=6, maxY=4;
+    const maxX=5, maxY=3.5;
     const dist=Math.sqrt(dx*dx+dy*dy)||1;
-    const scale=Math.min(dist/120,1);
+    const scale=Math.min(dist/130,1);
     pupilTarget[key].x=Math.cos(angle)*maxX*scale;
     pupilTarget[key].y=Math.sin(angle)*maxY*scale;
   });
 }
 
-// Smooth lerp loop — runs every frame, eases current toward target
 (function pupilLerp(){
   ['L','R'].forEach((k,i)=>{
     const eye=EYES[i];
-    const cur=pupilCurrent[k], tgt=pupilTarget[k];
+    const cur=pupilCurrent[k],tgt=pupilTarget[k];
     cur.x+=(tgt.x-cur.x)*0.12;
     cur.y+=(tgt.y-cur.y)*0.12;
-    // Apply to the inner content group for this eye
-    const grp=document.getElementById('pupilGroup'+k);
-    if(grp) grp.setAttribute('transform',`translate(${cur.x.toFixed(2)},${cur.y.toFixed(2)})`);
+    const cyOff=eyeSizes[morphCur.split('|')[i===0?0:1]]?.cyOff||0;
+    const iEl=document.getElementById(eye.iris);
+    const pEl=document.getElementById(eye.pupil);
+    iEl.setAttribute('cx',(eye.cx+cur.x).toFixed(2));
+    iEl.setAttribute('cy',(eye.cy+cyOff+cur.y).toFixed(2));
+    pEl.setAttribute('cx',(eye.cx+cur.x).toFixed(2));
+    pEl.setAttribute('cy',(eye.cy+cyOff+cur.y).toFixed(2));
   });
   requestAnimationFrame(pupilLerp);
 })();
@@ -773,7 +820,6 @@ const micBtn=document.getElementById('micBtn');
 // ═══════════════════════════════════════════════════════
 EYES.forEach(e=>applyEye(e,'idle',1,'idle'));
 morphCur='idle';
-
 function injectConfigKeys(){
   // Always overwrite with fresh config — never use stale cached keys
   if(EMBER_CONFIG.ANTHROPIC_KEY){ P.claudeKey=EMBER_CONFIG.ANTHROPIC_KEY; }
@@ -1148,8 +1194,8 @@ function buildPts(){const c=document.getElementById('particles');
 // ═══════════════════════════════════════════════════════
 // COWORK postMessage API
 // ═══════════════════════════════════════════════════════
-window.addEventListener('message',e=>{const d=e.data;if(!d||d.ember!=='setState')return;if(SL[d.value])setState(d.value);if(d.greeting)flash(d.greeting);if(d.speak)speakText(d.speak);});
-window.emberAPI={setState,flash,speakText,getProfile:()=>({...P})};
+window.addEventListener('message',e=>{const d=e.data;if(!d||d.ember!=='setState')return;if(SL[d.value])setState(d.value);if(d.greeting)flash(d.greeting);if(d.speak)speakText(d.speak);if(d.expression)doExpression(d.expression);});
+window.emberAPI={setState,flash,speakText,doExpression,getProfile:()=>({...P})};
 </script>
 </body>
 </html>
