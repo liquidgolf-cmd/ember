@@ -974,6 +974,7 @@ document.addEventListener('keyup',e=>{if(e.code==='Space'&&P.listenMode==='tap')
 
 function handleMic(){
   unlockAudio();
+  unlockSpeech();
   if(P.listenMode==='always'){alwaysOn=!alwaysOn;if(!alwaysOn&&recog){recog.stop();setState('idle');showWave(false);}else startAlways();return;}
   if(isListening)stopListen();else startListen();
 }
@@ -1125,12 +1126,22 @@ async function playAudioUrl(url){
     audio.play().catch(()=>resolve());
   });
 }
+// iOS speech synthesis must be triggered close to a user gesture.
+// We warm it up on mic tap with a silent utterance, then real speech works.
+let iosSpeechUnlocked=false;
+function unlockSpeech(){
+  if(iosSpeechUnlocked||!window.speechSynthesis)return;
+  const utt=new SpeechSynthesisUtterance('');
+  utt.volume=0;
+  utt.onend=()=>{iosSpeechUnlocked=true;};
+  window.speechSynthesis.speak(utt);
+}
+
 function speakBrowser(text){
   if(!window.speechSynthesis){afterSpeak();return;}
   window.speechSynthesis.cancel();
   const utt=new SpeechSynthesisUtterance(text);
   const voices=window.speechSynthesis.getVoices();
-  // iOS has great built-in voices — prioritize them
   const preferred=['Samantha','Karen','Moira','Ava','Serena','Google UK English Female','Microsoft Zira'];
   const pick=voices.find(v=>preferred.some(p=>v.name.includes(p)))
     ||voices.find(v=>v.lang.startsWith('en-')&&v.localService)
