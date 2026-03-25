@@ -441,10 +441,12 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
     <div><label class="field-label">AI model</label>
       <select class="field-select" id="s-model">
         <option value="claude">Claude (Anthropic)</option>
-        <option value="gpt4o">GPT-4o (OpenAI) — add key later</option>
-        <option value="grok">Grok (xAI) — add key later</option>
-        <option value="gemini">Gemini (Google) — add key later</option>
+        <option value="gpt4o">GPT-4o (OpenAI)</option>
+        <option value="grok">Grok (xAI) — coming soon</option>
+        <option value="gemini">Gemini (Google) — coming soon</option>
       </select></div>
+    <div><label class="field-label">OpenAI API key</label>
+      <div class="key-row"><input class="field-input" id="s-openai-key" type="password" placeholder="sk-…" autocomplete="off"><button class="key-toggle" id="s-oe" onclick="toggleVis('s-openai-key','s-oe')">👁</button></div></div>
     <div><label class="field-label">Voice engine</label>
       <div class="tts-cards" id="s-tts-cards">
         <div class="tts-card" data-engine="google" onclick="pickTTS(this)">
@@ -539,7 +541,7 @@ function getGoogleKey(){ return EMBER_CONFIG.GOOGLE_TTS_KEY || P.googleKey?.trim
 // ═══════════════════════════════════════════════════════
 const SK='ember_v3';
 const DEF={userName:'',companionName:'Ember',model:'claude',tone:'warm',listenMode:'tap',
-  claudeKey:'',googleKey:'',googleVoice:'en-US-Neural2-F',elevenKey:'',elevenVoiceId:'',
+  claudeKey:'',googleKey:'',googleVoice:'en-US-Neural2-F',elevenKey:'',elevenVoiceId:'',openaiKey:'',
   ttsEngine:'google',topics:[],onboarded:false,visitCount:0,lastVisit:null,history:[]};
 function loadP(){try{const r=localStorage.getItem(SK);return r?{...DEF,...JSON.parse(r)}:{...DEF};}catch{return{...DEF};}}
 function saveP(){localStorage.setItem(SK,JSON.stringify(P));}
@@ -1019,7 +1021,8 @@ async function handleText(text){
   const words=text.trim().split(/\s+/);
   if(words.length>=3){const tp=words.slice(0,3).join(' ')+'…';if(!P.topics.length||!P.topics[0].startsWith(words[0])){P.topics.unshift(tp);if(P.topics.length>8)P.topics=P.topics.slice(0,8);}}
   saveP();
-  const reply=await callClaude(text);
+  // Route to correct model
+  const reply=P.model==='gpt4o' ? await callGPT(text) : await callClaude(text);
   if(!reply)return;
   P.history.push({role:'assistant',content:reply});saveP();
   setState('speaking');hideBubble();flash(reply,reply.length*52);
@@ -1047,6 +1050,33 @@ Keep responses under 40 words unless the user asks for more.`;
     if(!res.ok){const e=await res.json().catch(()=>({}));flash((e?.error?.message||`Error ${res.status}`).slice(0,90));setState('idle');return null;}
     const d=await res.json();return d.content?.[0]?.text||null;
   }catch{flash('Connection error — check your Claude key.');setState('idle');return null;}
+}
+
+// ═══════════════════════════════════════════════════════
+// GPT-4o
+// ═══════════════════════════════════════════════════════
+async function callGPT(userText){
+  const key=P.openaiKey?.trim();
+  if(!key){flash('No OpenAI key — add it in Settings ⚙');setState('idle');return null;}
+  const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words.',
+    calm:'Be calm and focused. 2 sentences max.',direct:'Be direct. One sentence max. No filler.',
+    playful:'Be playful and light. Short, fun. Max 2 sentences.'};
+  const sys=`You are Ember, a warm AI companion. User's name: ${P.userName||'there'}.
+${toneMap[P.tone]||toneMap.warm}
+Speaking aloud via TTS — no markdown, no lists, no asterisks, no formatting of any kind.
+Keep responses under 40 words unless the user asks for more.`;
+  const msgs=[
+    {role:'system',content:sys},
+    ...(P.history||[]).slice(-10).slice(0,-1),
+    {role:'user',content:userText}
+  ];
+  try{
+    const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+      body:JSON.stringify({model:'gpt-4o',max_tokens:200,messages:msgs})});
+    if(!res.ok){const e=await res.json().catch(()=>({}));flash((e?.error?.message||`Error ${res.status}`).slice(0,90));setState('idle');return null;}
+    const d=await res.json();return d.choices?.[0]?.message?.content||null;
+  }catch{flash('Connection error — check your OpenAI key.');setState('idle');return null;}
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1143,6 +1173,7 @@ function populateSettings(){
   document.getElementById('s-uname').value=P.userName||'';
   document.getElementById('s-claude-key').value=P.claudeKey||'';
   document.getElementById('s-model').value=P.model||'claude';
+  document.getElementById('s-openai-key').value=P.openaiKey||'';
   document.getElementById('s-google-key').value=P.googleKey||'';
   document.getElementById('s-google-voice').value=P.googleVoice||'en-US-Neural2-F';
   document.getElementById('s-eleven-key').value=P.elevenKey||'';
@@ -1157,6 +1188,7 @@ function saveSettings(){
   P.userName=document.getElementById('s-uname').value.trim();
   P.claudeKey=document.getElementById('s-claude-key').value.trim();
   P.model=document.getElementById('s-model').value;
+  P.openaiKey=document.getElementById('s-openai-key').value.trim();
   P.googleKey=document.getElementById('s-google-key').value.trim();
   P.googleVoice=document.getElementById('s-google-voice').value;
   P.elevenKey=document.getElementById('s-eleven-key').value.trim();
