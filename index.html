@@ -1202,10 +1202,10 @@ async function playBase64Audio(b64){
         audio.playbackRate=0.93;
         setState('speaking');
         audio.onended=()=>{URL.revokeObjectURL(url);afterSpeak();resolve();};
-        audio.onerror=()=>{URL.revokeObjectURL(url);speakBrowser(b64.slice(0,5));resolve();};
+        audio.onerror=()=>{URL.revokeObjectURL(url);afterSpeak();resolve();};
         audio.play().catch(()=>{
           URL.revokeObjectURL(url);
-          speakBrowser(b64.slice(0,5));
+          afterSpeak();
           resolve();
         });
       }catch(e){afterSpeak();resolve();}
