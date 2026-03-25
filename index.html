@@ -208,7 +208,8 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 
 /* ONBOARDING */
 #onboarding{position:fixed;inset:0;z-index:200;background:rgba(4,10,18,.97);
-  display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .6s;}
+  display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .5s;pointer-events:none;}
+#onboarding.visible{opacity:1;pointer-events:all;}
 #onboarding.hidden{opacity:0;pointer-events:none;}
 .onboard-card{width:min(440px,92vw);background:var(--surface2);border:1px solid var(--border);
   border-radius:20px;padding:36px 32px;
@@ -849,30 +850,30 @@ function injectConfigKeys(){
 }
 
 (async()=>{
-  document.getElementById('onboarding').style.opacity='0';
+  const ob=document.getElementById('onboarding');
 
   await loadConfig();
 
-  // ALWAYS inject keys first — every device, every load, no exceptions
+  // Always inject keys first
   injectConfigKeys();
   saveP();
-
-  document.getElementById('onboarding').style.transition='opacity .4s ease';
-  document.getElementById('onboarding').style.opacity='1';
 
   const hasKeys=EMBER_CONFIG.ANTHROPIC_KEY&&EMBER_CONFIG.GOOGLE_TTS_KEY;
 
   if(P.onboarded){
     P.visitCount=(P.visitCount||0)+1;P.lastVisit=new Date().toISOString();
     saveP();
-    document.getElementById('onboarding').classList.add('hidden');
+    ob.classList.add('hidden');
     initMain();
   } else if(hasKeys&&P.userName){
     P.ttsEngine='google';
     P.onboarded=true;P.visitCount=1;P.lastVisit=new Date().toISOString();
     saveP();
-    document.getElementById('onboarding').classList.add('hidden');
+    ob.classList.add('hidden');
     initMain();
+  } else {
+    // Show onboarding — new device or new user
+    ob.classList.add('visible');
   }
 })();
 
@@ -896,10 +897,12 @@ function finishOB(){
   P.listenMode=document.querySelector('#ob-modes .listen-opt.selected')?.dataset.mode||'tap';
   P.onboarded=true;P.visitCount=1;P.lastVisit=new Date().toISOString();
   injectConfigKeys();
-  // Set TTS engine — prefer google if key available from any source
   P.ttsEngine=(P.googleKey||EMBER_CONFIG.GOOGLE_TTS_KEY)?'google':'browser';
   saveP();
-  document.getElementById('onboarding').classList.add('hidden');initMain();
+  const ob=document.getElementById('onboarding');
+  ob.classList.remove('visible');
+  ob.classList.add('hidden');
+  initMain();
 }
 function pickTone(btn,grid){document.querySelectorAll('#'+grid+' .tone-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
 function pickMode(btn,grid){document.querySelectorAll('#'+grid+' .listen-opt').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
