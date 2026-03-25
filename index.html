@@ -130,7 +130,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 .panel-close{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:transparent;
   color:var(--text-dim);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .panel-close:hover{border-color:var(--border-h);color:var(--accent);}
-.panel-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px;max-height:80vh;overflow-y:auto;}
+.panel-body{padding:18px 20px;display:flex;flex-direction:column;gap:14px;max-height:80vh;overflow-y:auto;padding-bottom:max(18px,env(safe-area-inset-bottom,18px));}
 .field-label{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-dim);font-weight:300;margin-bottom:5px;display:block;}
 .field-note{font-size:10px;color:var(--text-dim);margin-top:-8px;line-height:1.5;}
 .field-input{width:100%;padding:9px 13px;background:rgba(0,30,50,.6);border:1px solid var(--border);
@@ -182,8 +182,14 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
   background:rgba(0,80,120,.5);color:#00f0ff;font-family:'Raleway',sans-serif;
   font-size:11px;letter-spacing:.25em;text-transform:uppercase;cursor:pointer;font-weight:300;transition:all .22s;}
 .save-btn:hover{background:rgba(0,110,160,.6);box-shadow:0 0 20px rgba(0,200,240,.2);}
-#settingsPanel{width:min(380px,92vw);top:52px;right:20px;}
-#memoryPanel{width:min(320px,90vw);top:52px;right:58px;}
+#settingsPanel{width:min(380px,92vw);top:52px;right:20px;max-height:calc(100vh - 80px);}
+#memoryPanel{width:min(320px,90vw);top:52px;right:58px;max-height:calc(100vh - 80px);}
+
+@media(max-width:500px){
+  #settingsPanel{right:8px;left:8px;width:auto;top:52px;}
+  #memoryPanel{right:8px;left:8px;width:auto;top:52px;}
+  .panel-body{max-height:calc(100vh - 140px);}
+}
 .memory-entry{padding:10px 12px;background:rgba(0,30,50,.5);border:1px solid var(--border);
   border-radius:8px;font-size:12px;font-weight:300;color:var(--text);line-height:1.5;}
 .mem-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;display:block;}
