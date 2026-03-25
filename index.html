@@ -988,6 +988,58 @@ function handleMic(){
   if(isListening)stopListen();else startListen();
 }
 
+function startListen(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){flash("Voice requires Chrome or Safari.");return;}
+  stopAudio();isListening=true;setState('listening');showWave(true);micBtn.classList.add('active');hideBubble();
+  recog=new SR();recog.lang='en-US';recog.continuous=false;recog.interimResults=true;
+  recog.onresult=e=>{const t=Array.from(e.results).map(r=>r[0].transcript).join('');showBubble(t);if(e.results[e.results.length-1].isFinal)handleText(t);};
+  recog.onerror=err=>{
+    isListening=false;setState('idle');showWave(false);micBtn.classList.remove('active');
+    const errs={'not-allowed':'Mic blocked — allow microphone in browser settings, then reload.',
+      'permission-denied':'Mic permission denied — check site settings.',
+      'no-speech':'No speech detected — try again.',
+      'audio-capture':'No microphone found — check your device.',
+      'network':'Network error during speech recognition.',
+      'service-not-allowed':'Speech service blocked — must be on https:// or localhost.','aborted':null};
+    const msg=errs[err.error];if(msg)flash(msg,4000);
+  };
+  recog.onend=()=>{isListening=false;micBtn.classList.remove('active');showWave(false);if(curState==='listening')setState('idle');};
+  recog.start();
+}
+function stopListen(){if(recog)recog.stop();isListening=false;showWave(false);micBtn.classList.remove('active');}
+function startAlways(){
+  alwaysOn=true;micBtn.classList.add('active');
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){flash("Voice requires Chrome or Safari.");return;}
+  const loop=()=>{
+    if(!alwaysOn)return;
+    recog=new SR();recog.lang='en-US';recog.continuous=false;recog.interimResults=true;
+    recog.onresult=e=>{const t=Array.from(e.results).map(r=>r[0].transcript).join('');showBubble(t);setState('listening');showWave(true);if(e.results[e.results.length-1].isFinal)handleText(t);};
+    recog.onend=()=>{if(alwaysOn&&!['thinking','speaking'].includes(curState))setTimeout(loop,400);};
+    recog.onerror=e=>{
+      if(e.error==='not-allowed'||e.error==='permission-denied'){alwaysOn=false;micBtn.classList.remove('active');flash('Mic blocked — allow microphone in browser settings, then reload.',4000);return;}
+      if(alwaysOn)setTimeout(loop,800);
+    };
+    recog.start();
+  };loop();
+}
+
+async function handleText(text){
+  if(!text.trim())return;
+  showWave(false);showBubble(text);setState('thinking');
+  P.history=P.history||[];P.history.push({role:'user',content:text});
+  if(P.history.length>20)P.history=P.history.slice(-20);
+  const words=text.trim().split(/\s+/);
+  if(words.length>=3){const tp=words.slice(0,3).join(' ')+'…';if(!P.topics.length||!P.topics[0].startsWith(words[0])){P.topics.unshift(tp);if(P.topics.length>8)P.topics=P.topics.slice(0,8);}}
+  saveP();
+  const reply=P.model==='gpt4o'?await callGPT(text):P.model==='gemini'?await callGemini(text):await callClaude(text);
+  if(!reply)return;
+  P.history.push({role:'assistant',content:reply});saveP();
+  setState('speaking');hideBubble();flash(reply,reply.length*52);
+  await speakText(reply);
+}
+
 // Shortest valid silent MP3 — plays during user gesture to unlock iOS audio
 const SILENT_MP3='SUQzBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uQwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAACAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFNRTMuOTkuM1VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
 
