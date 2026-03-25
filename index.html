@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Ember</title>
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#060a0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ember">
+<link rel="apple-touch-icon" href="/icons/icon-512.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Ember">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap');
 :root{
@@ -1196,6 +1206,17 @@ function buildPts(){const c=document.getElementById('particles');
 // ═══════════════════════════════════════════════════════
 window.addEventListener('message',e=>{const d=e.data;if(!d||d.ember!=='setState')return;if(SL[d.value])setState(d.value);if(d.greeting)flash(d.greeting);if(d.speak)speakText(d.speak);if(d.expression)doExpression(d.expression);});
 window.emberAPI={setState,flash,speakText,doExpression,getProfile:()=>({...P})};
+
+// ═══════════════════════════════════════════════════════
+// PWA — Register service worker
+// ═══════════════════════════════════════════════════════
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/sw.js')
+      .then(()=>console.log('Ember SW registered'))
+      .catch(e=>console.log('SW registration failed:',e));
+  });
+}
 </script>
 </body>
 </html>
