@@ -123,16 +123,21 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 .panel{position:fixed;z-index:100;background:var(--surface2);border:1px solid var(--border);
   border-radius:16px;backdrop-filter:blur(20px);
   box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(0,200,230,.05);
-  transition:opacity .3s,transform .3s;opacity:0;pointer-events:none;transform:scale(.96) translateY(8px);}
+  transition:opacity .3s,transform .3s;opacity:0;pointer-events:none;transform:scale(.96) translateY(8px);
+  display:flex;flex-direction:column;}
 .panel.open{opacity:1;pointer-events:all;transform:scale(1) translateY(0);}
-.panel-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border);}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .panel-title{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--text-dim);font-weight:300;}
 .panel-close{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:transparent;
   color:var(--text-dim);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .panel-close:hover{border-color:var(--border-h);color:var(--accent);}
-.panel-body{padding:18px 20px 32px;display:flex;flex-direction:column;gap:14px;max-height:80vh;overflow-y:auto;}
-@supports(padding-bottom:env(safe-area-inset-bottom)){
-  .panel-body{padding-bottom:calc(32px + env(safe-area-inset-bottom));}
+.panel-body{padding:18px 20px 12px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;flex:1;}
+.panel-footer{padding:12px 20px;padding-bottom:max(16px,env(safe-area-inset-bottom));border-top:1px solid var(--border);flex-shrink:0;}
+#settingsPanel{width:min(380px,92vw);top:52px;right:20px;max-height:calc(100vh - 68px);}
+#memoryPanel{width:min(320px,90vw);top:52px;right:58px;max-height:calc(100vh - 68px);}
+@media(max-width:500px){
+  #settingsPanel{right:8px;left:8px;width:auto;top:52px;max-height:calc(100vh - 60px);}
+  #memoryPanel{right:8px;left:8px;width:auto;top:52px;max-height:calc(100vh - 60px);}
 }
 .field-label{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-dim);font-weight:300;margin-bottom:5px;display:block;}
 .field-note{font-size:10px;color:var(--text-dim);margin-top:-8px;line-height:1.5;}
@@ -181,18 +186,10 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 .tts-badge.fallback{background:rgba(80,120,160,.15);border:1px solid rgba(80,160,200,.2);color:rgba(120,180,220,.6);}
 .tts-card-sub{font-size:10px;color:var(--text-dim);line-height:1.5;padding-left:16px;}
 .tts-card-key{margin-top:8px;padding-left:16px;}
-.save-btn{width:100%;padding:10px;border:1px solid rgba(0,220,255,.4);border-radius:10px;
+.save-btn{width:100%;padding:12px;border:1px solid rgba(0,220,255,.4);border-radius:10px;
   background:rgba(0,80,120,.5);color:#00f0ff;font-family:'Raleway',sans-serif;
   font-size:11px;letter-spacing:.25em;text-transform:uppercase;cursor:pointer;font-weight:300;transition:all .22s;}
 .save-btn:hover{background:rgba(0,110,160,.6);box-shadow:0 0 20px rgba(0,200,240,.2);}
-#settingsPanel{width:min(380px,92vw);top:52px;right:20px;max-height:calc(100vh - 80px);}
-#memoryPanel{width:min(320px,90vw);top:52px;right:58px;max-height:calc(100vh - 80px);}
-
-@media(max-width:500px){
-  #settingsPanel{right:8px;left:8px;width:auto;top:52px;}
-  #memoryPanel{right:8px;left:8px;width:auto;top:52px;}
-  .panel-body{max-height:calc(100vh - 140px);}
-}
 .memory-entry{padding:10px 12px;background:rgba(0,30,50,.5);border:1px solid var(--border);
   border-radius:8px;font-size:12px;font-weight:300;color:var(--text);line-height:1.5;}
 .mem-label{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;display:block;}
@@ -504,9 +501,11 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
         <div class="listen-opt" data-mode="tap" onclick="pickMode(this,'s-modes')"><div class="listen-dot"></div><div><div class="listen-text">Tap / Spacebar</div><div class="listen-sub">Click eyes or hold spacebar</div></div></div>
         <div class="listen-opt" data-mode="always" onclick="pickMode(this,'s-modes')"><div class="listen-dot"></div><div><div class="listen-text">Always listening</div><div class="listen-sub">Auto-detects your voice</div></div></div>
       </div></div>
+  </div><!-- end panel-body -->
+  <div class="panel-footer">
     <button class="save-btn" onclick="saveSettings()">Save changes</button>
   </div>
-</div>
+</div><!-- end settingsPanel -->
 
 <!-- MEMORY PANEL -->
 <div class="panel" id="memoryPanel">
