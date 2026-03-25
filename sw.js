@@ -1,43 +1,17 @@
-// Ember Service Worker
-// Caches the shell so the UI loads instantly even offline
-// Voice + AI still needs internet
+// Ember Service Worker — cache-busting version
+// Clears all old caches and unregisters to stop blocking updates
 
-const CACHE = 'ember-v4';
-const SHELL = ['/'];
-
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(SHELL))
-  );
-  self.skipWaiting();
-});
+self.addEventListener('install', () => self.skipWaiting());
 
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    )
+    caches.keys()
+      .then(keys => Promise.all(keys.map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
+// No caching — always fetch fresh from network
 self.addEventListener('fetch', e => {
-  // Only cache same-origin GET requests
-  if (e.request.method !== 'GET') return;
-  if (!e.request.url.startsWith(self.location.origin)) return;
-
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      const network = fetch(e.request).then(res => {
-        // Update cache with fresh response
-        if (res.ok) {
-          const clone = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
-        }
-        return res;
-      });
-      // Return cached instantly, update in background
-      return cached || network;
-    })
-  );
+  e.respondWith(fetch(e.request).catch(() => new Response('Offline')));
 });
