@@ -848,12 +848,25 @@ function injectConfigKeys(){
 
 (async()=>{
   await loadConfig();
+
+  // If Vercel gave us keys, mark them injected
+  const hasKeys = EMBER_CONFIG.ANTHROPIC_KEY && EMBER_CONFIG.GOOGLE_TTS_KEY;
+
   if(P.onboarded){
     P.visitCount=(P.visitCount||0)+1;P.lastVisit=new Date().toISOString();
     injectConfigKeys();
     document.getElementById('onboarding').classList.add('hidden');
     initMain();
+  } else if(hasKeys && P.userName){
+    // Keys from Vercel + name already stored — skip onboarding entirely
+    injectConfigKeys();
+    P.ttsEngine='google';
+    P.onboarded=true;P.visitCount=1;P.lastVisit=new Date().toISOString();
+    saveP();
+    document.getElementById('onboarding').classList.add('hidden');
+    initMain();
   }
+  // else: show onboarding normally
 })();
 
 // ═══════════════════════════════════════════════════════
@@ -865,17 +878,20 @@ function obNext(){
   if(obStep===2){P.claudeKey=document.getElementById('ob-claude-key').value.trim();}
   if(obStep===3){P.googleKey=document.getElementById('ob-google-key').value.trim();}
   obStep++;
-  // In dev mode skip steps 2 & 3 (API keys) — jump straight to tone
-  if(EMBER_CONFIG.MODE==='dev'&&(obStep===2||obStep===3))obStep++;
+  // Skip key steps if Vercel config already has them
+  const hasKeys=EMBER_CONFIG.ANTHROPIC_KEY&&EMBER_CONFIG.GOOGLE_TTS_KEY;
+  if(hasKeys&&(obStep===2||obStep===3))obStep++;
   document.querySelectorAll('.onboard-step').forEach((el,i)=>el.classList.toggle('active',i===obStep));
 }
 function obBack(){obStep--;document.querySelectorAll('.onboard-step').forEach((el,i)=>el.classList.toggle('active',i===obStep));}
 function finishOB(){
   P.tone=document.querySelector('#ob-tones .tone-btn.selected')?.dataset.tone||'warm';
   P.listenMode=document.querySelector('#ob-modes .listen-opt.selected')?.dataset.mode||'tap';
-  P.ttsEngine=P.googleKey?'google':'browser';
   P.onboarded=true;P.visitCount=1;P.lastVisit=new Date().toISOString();
   injectConfigKeys();
+  // Set TTS engine — prefer google if key available from any source
+  P.ttsEngine=(P.googleKey||EMBER_CONFIG.GOOGLE_TTS_KEY)?'google':'browser';
+  saveP();
   document.getElementById('onboarding').classList.add('hidden');initMain();
 }
 function pickTone(btn,grid){document.querySelectorAll('#'+grid+' .tone-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
