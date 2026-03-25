@@ -519,14 +519,15 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 // ╚═══════════════════════════════════════════════════════╝
 const EMBER_CONFIG = {
   MODE: 'dev',
-  ANTHROPIC_KEY: '',     // local dev only — leave empty for Vercel
-  GOOGLE_TTS_KEY: '',    // local dev only — leave empty for Vercel
+  ANTHROPIC_KEY: '',
+  GOOGLE_TTS_KEY: '',
   GOOGLE_VOICE: 'en-US-Neural2-F',
+  OPENAI_KEY: '',
+  GEMINI_KEY: '',
   DEFAULT_TONE: 'warm',
   COMPANION_NAME: 'Ember',
 };
 
-// Fetch keys from /api/config (Vercel injects env vars there)
 async function loadConfig(){
   try{
     const r=await fetch('/api/config');
@@ -535,7 +536,9 @@ async function loadConfig(){
     if(d.anthropic) EMBER_CONFIG.ANTHROPIC_KEY=d.anthropic;
     if(d.google)    EMBER_CONFIG.GOOGLE_TTS_KEY=d.google;
     if(d.voice)     EMBER_CONFIG.GOOGLE_VOICE=d.voice;
-  }catch(e){ /* local dev — use hardcoded keys above */ }
+    if(d.openai)    EMBER_CONFIG.OPENAI_KEY=d.openai;
+    if(d.gemini)    EMBER_CONFIG.GEMINI_KEY=d.gemini;
+  }catch(e){}
 }
 
 // ═══════════════════════════════════════════════════════
@@ -833,11 +836,10 @@ morphCur='idle';
 
 function injectConfigKeys(){
   if(EMBER_CONFIG.ANTHROPIC_KEY) P.claudeKey=EMBER_CONFIG.ANTHROPIC_KEY;
-  if(EMBER_CONFIG.GOOGLE_TTS_KEY){
-    P.googleKey=EMBER_CONFIG.GOOGLE_TTS_KEY;
-    P.ttsEngine='google';
-  }
-  if(EMBER_CONFIG.GOOGLE_VOICE) P.googleVoice=EMBER_CONFIG.GOOGLE_VOICE;
+  if(EMBER_CONFIG.GOOGLE_TTS_KEY){ P.googleKey=EMBER_CONFIG.GOOGLE_TTS_KEY; P.ttsEngine='google'; }
+  if(EMBER_CONFIG.GOOGLE_VOICE)  P.googleVoice=EMBER_CONFIG.GOOGLE_VOICE;
+  if(EMBER_CONFIG.OPENAI_KEY)    P.openaiKey=EMBER_CONFIG.OPENAI_KEY;
+  if(EMBER_CONFIG.GEMINI_KEY)    P.geminiKey=EMBER_CONFIG.GEMINI_KEY;
 }
 
 (async()=>{
@@ -908,13 +910,11 @@ function toggleVis(id,btnId){const i=document.getElementById(id),b=document.getE
 // ═══════════════════════════════════════════════════════
 function initMain(){
   updateUI();populateSettings();renderMem();buildPts();startBlink();playGreet();initMicMode();
-  if(EMBER_CONFIG.ANTHROPIC_KEY){
-    document.querySelectorAll('.dev-hide').forEach(el=>el.style.display='none');
-  }
-  if(EMBER_CONFIG.GOOGLE_TTS_KEY){
-    const gKeyWrap=document.querySelector('#s-tts-cards .tts-card-key');
-    if(gKeyWrap) gKeyWrap.style.display='none';
-  }
+  // Hide key fields that Vercel is providing
+  if(EMBER_CONFIG.ANTHROPIC_KEY) document.querySelectorAll('.dev-hide').forEach(el=>el.style.display='none');
+  if(EMBER_CONFIG.GOOGLE_TTS_KEY){const g=document.querySelector('#s-tts-cards .tts-card-key');if(g)g.style.display='none';}
+  if(EMBER_CONFIG.OPENAI_KEY){const o=document.getElementById('s-openai-key')?.closest('div');if(o)o.style.display='none';}
+  if(EMBER_CONFIG.GEMINI_KEY){const g=document.getElementById('s-gemini-key')?.closest('div');if(g)g.style.display='none';}
 }
 
 function updateUI(){
@@ -1064,7 +1064,7 @@ Keep responses under 40 words unless the user asks for more.`;
 // GPT-4o
 // ═══════════════════════════════════════════════════════
 async function callGPT(userText){
-  const key=P.openaiKey?.trim();
+  const key=EMBER_CONFIG.OPENAI_KEY||P.openaiKey?.trim();
   if(!key){flash('No OpenAI key — add it in Settings ⚙');setState('idle');return null;}
   const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words.',
     calm:'Be calm and focused. 2 sentences max.',direct:'Be direct. One sentence max. No filler.',
@@ -1091,7 +1091,7 @@ Keep responses under 40 words unless the user asks for more.`;
 // GEMINI
 // ═══════════════════════════════════════════════════════
 async function callGemini(userText){
-  const key=P.geminiKey?.trim();
+  const key=EMBER_CONFIG.GEMINI_KEY||P.geminiKey?.trim();
   if(!key){flash('No Gemini key — add it in Settings ⚙');setState('idle');return null;}
   const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words.',
     calm:'Be calm and focused. 2 sentences max.',direct:'Be direct. One sentence max. No filler.',
