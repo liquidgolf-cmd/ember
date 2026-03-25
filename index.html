@@ -44,6 +44,18 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
   font-size:clamp(22px,3.5vw,32px);letter-spacing:.15em;color:rgba(220,160,70,.5);
   margin-bottom:2.5vh;opacity:0;animation:fadeUp .8s ease .4s forwards;user-select:none;}
 
+/* LANDSCAPE — phone on its side */
+@media (orientation:landscape) and (max-height:500px){
+  .companion-name{font-size:clamp(14px,2.5vh,20px);margin-bottom:1vh;}
+  #emberEyes{width:clamp(280px,65vh,520px) !important;height:clamp(120px,28vh,200px) !important;}
+  .status-line{margin-top:1vh;min-height:36px;}
+  .status-greeting{font-size:clamp(11px,1.8vh,15px);}
+  .mic-btn{width:clamp(40px,6vh,52px);height:clamp(40px,6vh,52px);margin-top:1.5vh;font-size:clamp(16px,2.4vh,22px);}
+  .waveform{margin-top:4px;}
+  .topic-chips{bottom:72px;}
+  .demo-controls{bottom:12px;}
+}
+
 /* EYES — SVG-based, no divs */
 .eyes{display:flex;gap:clamp(24px,6vw,70px);align-items:center;justify-content:center;}
 #emberEyes{cursor:pointer;overflow:visible;width:clamp(260px,48vw,440px);height:clamp(140px,22vw,200px);}
@@ -247,50 +259,46 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 <div id="onboarding">
   <div class="onboard-card">
     <div class="mini-eye-preview">
-      <svg width="120" height="70" viewBox="0 0 120 70" style="overflow:visible">
+      <svg width="160" height="80" viewBox="0 0 160 80" style="overflow:visible">
         <defs>
-          <radialGradient id="mg1" cx="50%" cy="36%" r="58%">
-            <stop offset="0%" stop-color="#0a3d55" stop-opacity=".9"/>
-            <stop offset="55%" stop-color="#061828"/>
-            <stop offset="100%" stop-color="#020810"/>
+          <radialGradient id="mgSclera" cx="50%" cy="40%" r="60%">
+            <stop offset="0%"   stop-color="#dff4f8"/>
+            <stop offset="55%"  stop-color="#b8d8e8"/>
+            <stop offset="100%" stop-color="#88b0c0"/>
           </radialGradient>
-          <radialGradient id="mc1" cx="38%" cy="34%" r="52%">
-            <stop offset="0%" stop-color="#eafaff"/>
-            <stop offset="22%" stop-color="#7eeeff"/>
-            <stop offset="55%" stop-color="#00b8d8"/>
+          <radialGradient id="mgIris" cx="42%" cy="38%" r="55%">
+            <stop offset="0%"   stop-color="#80dce8"/>
+            <stop offset="28%"  stop-color="#30b0cc"/>
+            <stop offset="62%"  stop-color="#1278a0"/>
+            <stop offset="100%" stop-color="#083858"/>
+          </radialGradient>
+          <radialGradient id="mgGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%"   stop-color="#20c8d8" stop-opacity=".28"/>
             <stop offset="100%" stop-color="transparent"/>
           </radialGradient>
-          <radialGradient id="mg2" cx="50%" cy="36%" r="58%">
-            <stop offset="0%" stop-color="#0a3d55" stop-opacity=".9"/>
-            <stop offset="55%" stop-color="#061828"/>
-            <stop offset="100%" stop-color="#020810"/>
-          </radialGradient>
-          <radialGradient id="mc2" cx="38%" cy="34%" r="52%">
-            <stop offset="0%" stop-color="#eafaff"/>
-            <stop offset="22%" stop-color="#7eeeff"/>
-            <stop offset="55%" stop-color="#00b8d8"/>
-            <stop offset="100%" stop-color="transparent"/>
-          </radialGradient>
-          <filter id="mf"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <clipPath id="mc-l"><ellipse cx="30" cy="35" rx="22" ry="28"/></clipPath>
-          <clipPath id="mc-r"><ellipse cx="90" cy="35" rx="22" ry="28"/></clipPath>
+          <clipPath id="mc-l"><path d="M30,8 C52,8 52,22 52,40 C52,58 52,72 30,72 C8,72 8,58 8,40 C8,22 8,8 30,8Z"/></clipPath>
+          <clipPath id="mc-r"><path d="M130,8 C152,8 152,22 152,40 C152,58 152,72 130,72 C108,72 108,58 108,40 C108,22 108,8 130,8Z"/></clipPath>
         </defs>
-        <ellipse cx="30" cy="35" rx="36" ry="40" fill="rgba(0,200,230,.06)"/>
-        <ellipse cx="30" cy="35" rx="22" ry="28" fill="url(#mg1)" stroke="rgba(0,185,215,.3)" stroke-width="1"/>
+        <!-- Left eye -->
+        <ellipse cx="30" cy="40" rx="38" ry="32" fill="url(#mgGlow)"/>
+        <path d="M30,8 C52,8 52,22 52,40 C52,58 52,72 30,72 C8,72 8,58 8,40 C8,22 8,8 30,8Z" fill="none" stroke="#080e12" stroke-width="4"/>
         <g clip-path="url(#mc-l)">
-          <ellipse cx="30" cy="35" rx="14" ry="14" fill="none" stroke="rgba(0,145,175,.5)" stroke-width="5" stroke-dasharray="4 3"/>
-          <ellipse cx="30" cy="35" rx="7" ry="7" fill="#010a12"/>
-          <ellipse cx="30" cy="33" rx="5.5" ry="5.5" fill="url(#mc1)" filter="url(#mf)"/>
-          <ellipse cx="23" cy="26" rx="2.5" ry="2" fill="rgba(255,255,255,.5)" transform="rotate(-18,23,26)"/>
+          <path d="M30,8 C52,8 52,22 52,40 C52,58 52,72 30,72 C8,72 8,58 8,40 C8,22 8,8 30,8Z" fill="url(#mgSclera)"/>
+          <ellipse cx="30" cy="41" rx="16" ry="16" fill="url(#mgIris)"/>
+          <ellipse cx="30" cy="41" rx="8"  ry="8"  fill="#060c10"/>
+          <ellipse cx="24" cy="34" rx="4"  ry="3.5" fill="white" opacity=".9"/>
         </g>
-        <ellipse cx="90" cy="35" rx="36" ry="40" fill="rgba(0,200,230,.06)"/>
-        <ellipse cx="90" cy="35" rx="22" ry="28" fill="url(#mg2)" stroke="rgba(0,185,215,.3)" stroke-width="1"/>
+        <path d="M30,8 C52,8 52,22 52,40 C52,58 52,72 30,72 C8,72 8,58 8,40 C8,22 8,8 30,8Z" fill="none" stroke="#080e12" stroke-width="3.5"/>
+        <!-- Right eye -->
+        <ellipse cx="130" cy="40" rx="38" ry="32" fill="url(#mgGlow)"/>
+        <path d="M130,8 C152,8 152,22 152,40 C152,58 152,72 130,72 C108,72 108,58 108,40 C108,22 108,8 130,8Z" fill="none" stroke="#080e12" stroke-width="4"/>
         <g clip-path="url(#mc-r)">
-          <ellipse cx="90" cy="35" rx="14" ry="14" fill="none" stroke="rgba(0,145,175,.5)" stroke-width="5" stroke-dasharray="4 3"/>
-          <ellipse cx="90" cy="35" rx="7" ry="7" fill="#010a12"/>
-          <ellipse cx="90" cy="33" rx="5.5" ry="5.5" fill="url(#mc2)" filter="url(#mf)"/>
-          <ellipse cx="83" cy="26" rx="2.5" ry="2" fill="rgba(255,255,255,.5)" transform="rotate(-18,83,26)"/>
+          <path d="M130,8 C152,8 152,22 152,40 C152,58 152,72 130,72 C108,72 108,58 108,40 C108,22 108,8 130,8Z" fill="url(#mgSclera)"/>
+          <ellipse cx="130" cy="41" rx="16" ry="16" fill="url(#mgIris)"/>
+          <ellipse cx="130" cy="41" rx="8"  ry="8"  fill="#060c10"/>
+          <ellipse cx="124" cy="34" rx="4"  ry="3.5" fill="white" opacity=".9"/>
         </g>
+        <path d="M130,8 C152,8 152,22 152,40 C152,58 152,72 130,72 C108,72 108,58 108,40 C108,22 108,8 130,8Z" fill="none" stroke="#080e12" stroke-width="3.5"/>
       </svg>
     </div>
     <div class="onboard-step active" id="step0">

@@ -4,7 +4,7 @@
   "description": "Your AI companion",
   "start_url": "/",
   "display": "fullscreen",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#060a0c",
   "theme_color": "#060a0c",
   "icons": [
