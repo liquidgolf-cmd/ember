@@ -1142,18 +1142,20 @@ Keep responses under 40 words unless the user asks for more.`;
   }catch{flash('Connection error — check your Gemini key.');setState('idle');return null;}
 }
 async function speakText(text){
-  // Always try Google first if we have a key — ignores stale P.ttsEngine
   const googleKey=getGoogleKey();
   const elevenKey=P.elevenKey?.trim();
   const elevenVoice=P.elevenVoiceId?.trim();
-
   if(elevenKey&&elevenVoice&&P.ttsEngine==='elevenlabs'){
     const ok=await speakElevenLabs(text);if(ok)return;
     flash('ElevenLabs failed — trying Google…',1800);
   }
   if(googleKey){
-    const ok=await speakGoogle(text);if(ok)return;
-    flash('Google TTS failed — using browser…',1800);
+    flash('⏳ fetching voice…',3000);
+    const ok=await speakGoogle(text);
+    if(ok)return;
+    flash('❌ Google TTS failed — using browser voice',3000);
+  } else {
+    flash('❌ No Google key — using browser voice',3000);
   }
   speakBrowser(text);
 }
@@ -1211,6 +1213,7 @@ function ensureAudioCtx(){
 async function playBase64Audio(b64){
   const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
   if(isIOS){
+    flash('📱 iOS audio playing…',3000);
     return new Promise(resolve=>{
       try{
         const bytes=atob(b64);
