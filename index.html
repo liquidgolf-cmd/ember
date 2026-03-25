@@ -1073,10 +1073,12 @@ async function callProxy(userText,model){
 // TTS STACK
 // ═══════════════════════════════════════════════════════
 async function speakText(text){
-  // Always try Google TTS via server proxy first
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  // iOS: use browser speech synthesis — works immediately, no audio unlock needed
+  if(isIOS){ speakBrowser(text); return; }
+  // Desktop: use Google TTS via server proxy
   const ok=await speakGoogle(text);
   if(ok)return;
-  // Fallback to browser TTS
   speakBrowser(text);
 }
 async function speakGoogle(text){
@@ -1113,11 +1115,17 @@ function speakBrowser(text){
   window.speechSynthesis.cancel();
   const utt=new SpeechSynthesisUtterance(text);
   const voices=window.speechSynthesis.getVoices();
-  const preferred=['Samantha','Karen','Moira','Google UK English Female','Microsoft Zira','Ava'];
-  const pick=voices.find(v=>preferred.some(p=>v.name.includes(p)))||voices.find(v=>v.lang.startsWith('en')&&v.name.toLowerCase().includes('female'))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
-  if(pick)utt.voice=pick;
-  utt.rate=0.93;utt.pitch=1.05;utt.volume=1;
-  utt.onstart=()=>setState('speaking');utt.onend=()=>afterSpeak();utt.onerror=()=>afterSpeak();
+  // iOS has great built-in voices — prioritize them
+  const preferred=['Samantha','Karen','Moira','Ava','Serena','Google UK English Female','Microsoft Zira'];
+  const pick=voices.find(v=>preferred.some(p=>v.name.includes(p)))
+    ||voices.find(v=>v.lang.startsWith('en-')&&v.localService)
+    ||voices.find(v=>v.lang.startsWith('en'))
+    ||voices[0];
+  if(pick) utt.voice=pick;
+  utt.rate=0.92;utt.pitch=1.05;utt.volume=1;
+  utt.onstart=()=>setState('speaking');
+  utt.onend=()=>afterSpeak();
+  utt.onerror=()=>afterSpeak();
   window.speechSynthesis.speak(utt);
 }
 if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>{};
