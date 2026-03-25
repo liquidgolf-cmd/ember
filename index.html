@@ -208,7 +208,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 
 /* ONBOARDING */
 #onboarding{position:fixed;inset:0;z-index:200;background:rgba(4,10,18,.97);
-  display:flex;align-items:center;justify-content:center;opacity:1;transition:opacity .6s;}
+  display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .6s;}
 #onboarding.hidden{opacity:0;pointer-events:none;}
 .onboard-card{width:min(440px,92vw);background:var(--surface2);border:1px solid var(--border);
   border-radius:20px;padding:36px 32px;
@@ -839,34 +839,42 @@ const micBtn=document.getElementById('micBtn');
 EYES.forEach(e=>applyEye(e,'idle',1,'idle'));
 morphCur='idle';
 function injectConfigKeys(){
-  // Always overwrite with fresh config — never use stale cached keys
-  if(EMBER_CONFIG.ANTHROPIC_KEY){ P.claudeKey=EMBER_CONFIG.ANTHROPIC_KEY; }
-  if(EMBER_CONFIG.GOOGLE_TTS_KEY){ P.googleKey=EMBER_CONFIG.GOOGLE_TTS_KEY; P.ttsEngine='google'; }
-  if(EMBER_CONFIG.GOOGLE_VOICE){ P.googleVoice=EMBER_CONFIG.GOOGLE_VOICE; }
-  saveP();
+  if(EMBER_CONFIG.ANTHROPIC_KEY) P.claudeKey=EMBER_CONFIG.ANTHROPIC_KEY;
+  if(EMBER_CONFIG.GOOGLE_TTS_KEY){
+    P.googleKey=EMBER_CONFIG.GOOGLE_TTS_KEY;
+    P.ttsEngine='google';
+  }
+  if(EMBER_CONFIG.GOOGLE_VOICE) P.googleVoice=EMBER_CONFIG.GOOGLE_VOICE;
 }
 
 (async()=>{
+  // Hide onboarding until config is ready
+  document.getElementById('onboarding').style.opacity='0';
+
   await loadConfig();
 
-  // If Vercel gave us keys, mark them injected
-  const hasKeys = EMBER_CONFIG.ANTHROPIC_KEY && EMBER_CONFIG.GOOGLE_TTS_KEY;
+  // Inject keys into profile immediately — runs on every device, every load
+  injectConfigKeys();
+  saveP();
+
+  // Fade in
+  document.getElementById('onboarding').style.transition='opacity .4s ease';
+  document.getElementById('onboarding').style.opacity='1';
+
+  const hasKeys=EMBER_CONFIG.ANTHROPIC_KEY&&EMBER_CONFIG.GOOGLE_TTS_KEY;
 
   if(P.onboarded){
     P.visitCount=(P.visitCount||0)+1;P.lastVisit=new Date().toISOString();
-    injectConfigKeys();
+    saveP();
     document.getElementById('onboarding').classList.add('hidden');
     initMain();
-  } else if(hasKeys && P.userName){
-    // Keys from Vercel + name already stored — skip onboarding entirely
-    injectConfigKeys();
+  } else if(hasKeys&&P.userName){
     P.ttsEngine='google';
     P.onboarded=true;P.visitCount=1;P.lastVisit=new Date().toISOString();
     saveP();
     document.getElementById('onboarding').classList.add('hidden');
     initMain();
   }
-  // else: show onboarding normally
 })();
 
 // ═══════════════════════════════════════════════════════
