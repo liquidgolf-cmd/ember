@@ -847,27 +847,20 @@ function injectConfigKeys(){
 (async()=>{
   const ob=document.getElementById('onboarding');
 
+  // Wait for keys before doing anything
   await loadConfig();
 
-  // Always inject keys first
+  // Inject keys into profile every single load, no exceptions
   injectConfigKeys();
   saveP();
-
-  const hasKeys=EMBER_CONFIG.ANTHROPIC_KEY&&EMBER_CONFIG.GOOGLE_TTS_KEY;
 
   if(P.onboarded){
     P.visitCount=(P.visitCount||0)+1;P.lastVisit=new Date().toISOString();
     saveP();
     ob.classList.add('hidden');
     initMain();
-  } else if(hasKeys&&P.userName){
-    P.ttsEngine='google';
-    P.onboarded=true;P.visitCount=1;P.lastVisit=new Date().toISOString();
-    saveP();
-    ob.classList.add('hidden');
-    initMain();
   } else {
-    // Show onboarding — new device or new user
+    // New device — show onboarding (keys already injected above)
     ob.classList.add('visible');
   }
 })();
@@ -878,12 +871,9 @@ function injectConfigKeys(){
 let obStep=0;
 function obNext(){
   if(obStep===1){const n=document.getElementById('ob-name').value.trim();if(!n){document.getElementById('ob-name').focus();return;}P.userName=n;}
-  if(obStep===2){P.claudeKey=document.getElementById('ob-claude-key').value.trim();}
-  if(obStep===3){P.googleKey=document.getElementById('ob-google-key').value.trim();}
   obStep++;
-  // Skip key steps if Vercel config already has them
-  const hasKeys=EMBER_CONFIG.ANTHROPIC_KEY&&EMBER_CONFIG.GOOGLE_TTS_KEY;
-  if(hasKeys&&(obStep===2||obStep===3))obStep++;
+  // Always skip steps 2 & 3 (API keys) — Vercel provides them
+  if(obStep===2||obStep===3) obStep++;
   document.querySelectorAll('.onboard-step').forEach((el,i)=>el.classList.toggle('active',i===obStep));
 }
 function obBack(){obStep--;document.querySelectorAll('.onboard-step').forEach((el,i)=>el.classList.toggle('active',i===obStep));}
@@ -892,7 +882,7 @@ function finishOB(){
   P.listenMode=document.querySelector('#ob-modes .listen-opt.selected')?.dataset.mode||'tap';
   P.onboarded=true;P.visitCount=1;P.lastVisit=new Date().toISOString();
   injectConfigKeys();
-  P.ttsEngine=(P.googleKey||EMBER_CONFIG.GOOGLE_TTS_KEY)?'google':'browser';
+  P.ttsEngine='google';
   saveP();
   const ob=document.getElementById('onboarding');
   ob.classList.remove('visible');
@@ -1040,6 +1030,142 @@ async function handleText(text){
   await speakText(reply);
 }
 
+// ═══════════════════════════════════════════════════════
+// CLAUDE
+// ═══════════════════════════════════════════════════════
+async function callClaude(userText){
+  const key=getClaudeKey();
+  if(!key){flash('No Claude key — add it in Settings ⚙');setState('idle');return null;}
+  const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words — voice output.',
+    calm:'Be calm and focused. 2 sentences max for voice.',direct:'Be direct. One sentence max. No filler.',
+    playful:'Be playful and light. Short, fun. Max 2 sentences.'};
+  const sys=`You are Ember, a warm AI companion. User's name: ${P.userName||'there'}.
+${toneMap[P.tone]||toneMap.warm}
+Speaking aloud via TTS — no markdown, lists, asterisks, or any formatting.
+Keep responses under 40 words unless the user asks for more.`;
+  const msgs=[...(P.history||[]).slice(-10).slice(0,-1),{role:'user',content:userText}];
+  try{
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),15000);
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,system:sys,messages:msgs}),
+      signal:controller.signal});
+    clearTimeout(timeout);
+    if(!res.ok){const e=await res.json().catch(()=>({}));const msg=res.status===529||res.status===503?'Claude is overloaded — try again.':(e?.error?.message||`Error ${res.status}`).slice(0,90);flash(msg);setState('idle');return null;}
+    const d=await res.json();return d.content?.[0]?.text||null;
+  }catch(e){
+    if(e.name==='AbortError'){flash('Request timed out — try again.');setState('idle');return null;}
+    flash('Connection error: '+e.message.slice(0,60));setState('idle');return null;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// GPT-4o
+// ═══════════════════════════════════════════════════════
+async function callGPT(userText){
+  if(!EMBER_CONFIG.OPENAI_KEY) await loadConfig();
+  const key=EMBER_CONFIG.OPENAI_KEY||P.openaiKey?.trim();
+  if(!key){flash('No OpenAI key — add it in Settings ⚙');setState('idle');return null;}
+  const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words.',
+    calm:'Be calm and focused. 2 sentences max.',direct:'Be direct. One sentence max. No filler.',
+    playful:'Be playful and light. Short, fun. Max 2 sentences.'};
+  const sys=`You are Ember, a warm AI companion. User's name: ${P.userName||'there'}.
+${toneMap[P.tone]||toneMap.warm}
+Speaking aloud via TTS — no markdown, no lists, no asterisks, no formatting of any kind.
+Keep responses under 40 words unless the user asks for more.`;
+  const msgs=[{role:'system',content:sys},...(P.history||[]).slice(-10).slice(0,-1),{role:'user',content:userText}];
+  try{
+    const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+      body:JSON.stringify({model:'gpt-4o',max_tokens:200,messages:msgs})});
+    if(!res.ok){const e=await res.json().catch(()=>({}));flash((e?.error?.message||`Error ${res.status}`).slice(0,90));setState('idle');return null;}
+    const d=await res.json();return d.choices?.[0]?.message?.content||null;
+  }catch{flash('Connection error — check your OpenAI key.');setState('idle');return null;}
+}
+
+// ═══════════════════════════════════════════════════════
+// GEMINI
+// ═══════════════════════════════════════════════════════
+async function callGemini(userText){
+  if(!EMBER_CONFIG.GEMINI_KEY) await loadConfig();
+  const key=EMBER_CONFIG.GEMINI_KEY||P.geminiKey?.trim();
+  if(!key){flash('No Gemini key — add it in Settings ⚙');setState('idle');return null;}
+  const toneMap={warm:'Be warm, encouraging, conversational. Under 35 words.',
+    calm:'Be calm and focused. 2 sentences max.',direct:'Be direct. One sentence max. No filler.',
+    playful:'Be playful and light. Short, fun. Max 2 sentences.'};
+  const sys=`You are Ember, a warm AI companion. User's name: ${P.userName||'there'}.
+${toneMap[P.tone]||toneMap.warm}
+Speaking aloud via TTS — no markdown, no lists, no asterisks, no formatting of any kind.
+Keep responses under 40 words unless the user asks for more.`;
+  const history=(P.history||[]).slice(-10).slice(0,-1);
+  const contents=[...history.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]})),{role:'user',parts:[{text:userText}]}];
+  try{
+    const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({systemInstruction:{parts:[{text:sys}]},contents,generationConfig:{maxOutputTokens:200}})});
+    if(!res.ok){const e=await res.json().catch(()=>({}));flash((e?.error?.message||`Error ${res.status}`).slice(0,90));setState('idle');return null;}
+    const d=await res.json();return d.candidates?.[0]?.content?.parts?.[0]?.text||null;
+  }catch{flash('Connection error — check your Gemini key.');setState('idle');return null;}
+}
+
+// ═══════════════════════════════════════════════════════
+// TTS STACK
+// ═══════════════════════════════════════════════════════
+async function speakText(text){
+  const googleKey=getGoogleKey();
+  if(googleKey){
+    const ok=await speakGoogle(text);
+    if(ok)return;
+    flash('Google TTS failed — using browser…',1800);
+  }
+  speakBrowser(text);
+}
+async function speakGoogle(text){
+  try{
+    const key=getGoogleKey();
+    if(!key)return false;
+    const body={input:{text},voice:{languageCode:'en-US',name:P.googleVoice||EMBER_CONFIG.GOOGLE_VOICE},
+      audioConfig:{audioEncoding:'MP3',speakingRate:0.93,pitch:1.5,volumeGainDb:0}};
+    const res=await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${key}`,
+      {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!res.ok)return false;
+    const data=await res.json();if(!data.audioContent)return false;
+    await playBase64Audio(data.audioContent);return true;
+  }catch(e){console.warn('Google TTS:',e);return false;}
+}
+async function speakElevenLabs(text){
+  try{
+    const res=await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${P.elevenVoiceId.trim()}`,
+      {method:'POST',headers:{'Content-Type':'application/json','xi-api-key':P.elevenKey.trim()},
+       body:JSON.stringify({text,model_id:'eleven_multilingual_v2',voice_settings:{stability:.5,similarity_boost:.75,style:.35,use_speaker_boost:true}})});
+    if(!res.ok)return false;
+    const blob=await res.blob();const url=URL.createObjectURL(blob);
+    await playAudioUrl(url);URL.revokeObjectURL(url);return true;
+  }catch(e){console.warn('ElevenLabs:',e);return false;}
+}
+async function playAudioUrl(url){
+  return new Promise(resolve=>{
+    const audio=new Audio(url);audio.playbackRate=0.93;setState('speaking');
+    audio.onended=()=>{afterSpeak();resolve();};audio.onerror=()=>resolve();
+    audio.play().catch(()=>resolve());
+  });
+}
+function speakBrowser(text){
+  if(!window.speechSynthesis){afterSpeak();return;}
+  window.speechSynthesis.cancel();
+  const utt=new SpeechSynthesisUtterance(text);
+  const voices=window.speechSynthesis.getVoices();
+  const preferred=['Samantha','Karen','Moira','Google UK English Female','Microsoft Zira','Ava'];
+  const pick=voices.find(v=>preferred.some(p=>v.name.includes(p)))||voices.find(v=>v.lang.startsWith('en')&&v.name.toLowerCase().includes('female'))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
+  if(pick)utt.voice=pick;
+  utt.rate=0.93;utt.pitch=1.05;utt.volume=1;
+  utt.onstart=()=>setState('speaking');utt.onend=()=>afterSpeak();utt.onerror=()=>afterSpeak();
+  window.speechSynthesis.speak(utt);
+}
+if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>{};
+function afterSpeak(){setState('idle');if(P.listenMode==='always'&&alwaysOn)setTimeout(startAlways,600);}
+
 // Shortest valid silent MP3 — plays during user gesture to unlock iOS audio
 const SILENT_MP3='SUQzBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//uQwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAACAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFNRTMuOTkuM1VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
 
@@ -1116,20 +1242,6 @@ async function playAudioUrl(url){
     audio.play().catch(()=>resolve());
   });
 }
-function speakBrowser(text){
-  if(!window.speechSynthesis){afterSpeak();return;}
-  window.speechSynthesis.cancel();
-  const utt=new SpeechSynthesisUtterance(text);
-  const voices=window.speechSynthesis.getVoices();
-  const preferred=['Samantha','Karen','Moira','Google UK English Female','Microsoft Zira','Ava'];
-  const pick=voices.find(v=>preferred.some(p=>v.name.includes(p)))||voices.find(v=>v.lang.startsWith('en')&&v.name.toLowerCase().includes('female'))||voices.find(v=>v.lang.startsWith('en'))||voices[0];
-  if(pick)utt.voice=pick;
-  utt.rate=0.93;utt.pitch=1.05;utt.volume=1;
-  utt.onstart=()=>setState('speaking');utt.onend=()=>afterSpeak();utt.onerror=()=>afterSpeak();
-  window.speechSynthesis.speak(utt);
-}
-if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>{};
-function afterSpeak(){setState('idle');if(P.listenMode==='always'&&alwaysOn)setTimeout(startAlways,600);}
 
 // ═══════════════════════════════════════════════════════
 // UI HELPERS
