@@ -763,12 +763,12 @@ function applyEye(eye,toState,t,fromState){
 
   const irisRy=toState==='happy'?iris*.55:iris;
   const irisEl=document.getElementById(eye.iris);
-  irisEl.setAttribute('rx',iris); irisEl.setAttribute('ry',irisRy);
+  irisEl.setAttribute('rx',Math.max(0,iris)); irisEl.setAttribute('ry',Math.max(0,irisRy));
   irisEl.setAttribute('cx',eye.cx); irisEl.setAttribute('cy',eye.cy+cyOff);
 
   const pupilRy=toState==='happy'?pupil*.55:pupil;
   const pupilEl=document.getElementById(eye.pupil);
-  pupilEl.setAttribute('rx',pupil); pupilEl.setAttribute('ry',pupilRy);
+  pupilEl.setAttribute('rx',Math.max(0,pupil)); pupilEl.setAttribute('ry',Math.max(0,pupilRy));
   pupilEl.setAttribute('cx',eye.cx); pupilEl.setAttribute('cy',eye.cy+cyOff);
 }
 
@@ -840,7 +840,7 @@ function doBlink(){
     if(raw<1)requestAnimationFrame(closeL);
     else setTimeout(()=>{
       const s2=performance.now();
-      function openL(n){const t2=Math.min((n-s2)/145,1);applyEye(EYES[0],prev,easeOut(t2),'blink');if(t2<1)requestAnimationFrame(openL);else morphCur=prev;}
+      function openL(n){const t2=Math.max(0,Math.min((n-s2)/145,1));applyEye(EYES[0],prev,easeOut(t2),'blink');if(t2<1)requestAnimationFrame(openL);else morphCur=prev;}
       requestAnimationFrame(openL);
     },26);
   }
@@ -854,7 +854,7 @@ function doBlink(){
       if(raw<1)requestAnimationFrame(closeR);
       else setTimeout(()=>{
         const s4=performance.now();
-        function openR(n){const t2=Math.min((n-s4)/145,1);applyEye(EYES[1],prev,easeOut(t2),'blink');if(t2<1)requestAnimationFrame(openR);}
+        function openR(n){const t2=Math.max(0,Math.min((n-s4)/145,1));applyEye(EYES[1],prev,easeOut(t2),'blink');if(t2<1)requestAnimationFrame(openR);}
         requestAnimationFrame(openR);
       },26);
     }
