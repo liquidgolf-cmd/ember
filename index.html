@@ -1103,7 +1103,7 @@ async function speakGoogle(text){
     });
     if(!res.ok)return false;
     const data=await res.json();if(!data.audioContent)return false;
-    await playBase64Audio(data.audioContent);return true;
+    await playBase64Audio(data.audioContent,text);return true;
   }catch(e){console.warn('Google TTS:',e);return false;}
 }
 async function speakElevenLabs(text){
@@ -1185,35 +1185,10 @@ function stopAudio(){
   window.speechSynthesis?.cancel();
 }
 
-async function playBase64Audio(b64){
-  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
-  if(isIOS){
-    return new Promise(resolve=>{
-      try{
-        const bytes=atob(b64);
-        const arr=new Uint8Array(bytes.length);
-        for(let i=0;i<bytes.length;i++) arr[i]=bytes.charCodeAt(i);
-        const blob=new Blob([arr],{type:'audio/mpeg'});
-        const url=URL.createObjectURL(blob);
-        // Reuse the pre-unlocked audio element
-        const audio=iosAudio||new Audio();
-        iosAudio=audio;
-        audio.src=url;
-        audio.playbackRate=0.93;
-        audio.volume=1;
-        setState('speaking');
-        audio.onended=()=>{URL.revokeObjectURL(url);afterSpeak();resolve();};
-        audio.onerror=()=>{URL.revokeObjectURL(url);speakBrowser(b64.slice(0,0));resolve();};
-        audio.play().catch(err=>{
-          console.warn('iOS play failed:',err);
-          URL.revokeObjectURL(url);
-          afterSpeak();
-          resolve();
-        });
-      }catch(e){afterSpeak();resolve();}
-    });
-  }
-  // Desktop — AudioContext
+async function playBase64Audio(b64,fallbackText=''){
+  // Use AudioContext for all platforms — audioCtx was resumed during the user gesture
+  // in unlockAudio(), so its blessing persists through async TTS round-trips.
+  // The iOS <Audio> element approach lost its gesture token by the time play() was called.
   return new Promise((resolve,reject)=>{
     try{
       const ctx=ensureAudioCtx();
