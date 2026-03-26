@@ -246,7 +246,39 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{to{opacity:1}}
+
+/* AUTH MODAL */
+.auth-modal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
+  background:rgba(6,10,12,.92);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s;}
+.auth-modal.open{opacity:1;pointer-events:all;}
+.auth-card{background:rgba(8,18,22,.98);border:1px solid var(--border);border-radius:16px;
+  padding:32px 28px;width:min(340px,90vw);display:flex;flex-direction:column;gap:14px;}
+.auth-logo{font-size:17px;letter-spacing:.25em;color:var(--accent);font-weight:300;text-align:center;margin-bottom:2px;}
+.auth-tabs{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.auth-tab{flex:1;padding:9px 0;font-family:'Raleway',sans-serif;font-size:11px;letter-spacing:.15em;
+  background:transparent;border:none;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.auth-tab.active{background:rgba(0,200,210,.1);color:var(--accent);}
+.auth-form{display:flex;flex-direction:column;gap:10px;}
+.auth-input{width:100%;padding:11px 14px;background:rgba(0,30,40,.6);border:1px solid var(--border);
+  border-radius:8px;color:var(--text-bright);font-family:'Raleway',sans-serif;font-size:13px;
+  outline:none;transition:border .2s;}
+.auth-input:focus{border-color:var(--border-h);}
+.auth-input::placeholder{color:var(--text-dim);}
+.auth-error{font-size:11px;color:#f06060;min-height:14px;letter-spacing:.04em;}
+.auth-btn{width:100%;padding:12px;background:rgba(0,200,210,.12);border:1px solid rgba(0,200,210,.45);
+  border-radius:8px;color:var(--accent);font-family:'Raleway',sans-serif;font-size:12px;
+  letter-spacing:.2em;cursor:pointer;transition:all .2s;}
+.auth-btn:hover{background:rgba(0,200,210,.22);}
+.auth-divider{text-align:center;font-size:10px;color:var(--text-dim);letter-spacing:.1em;}
+.auth-guest{background:none;border:none;color:var(--text-dim);font-family:'Raleway',sans-serif;
+  font-size:11px;letter-spacing:.1em;cursor:pointer;text-align:center;padding:2px;transition:color .2s;}
+.auth-guest:hover{color:var(--text);}
+.header-avatar{cursor:pointer;}
 </style>
+<!-- Firebase compat SDK (auth + firestore only) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <div class="aurora"></div>
@@ -360,7 +392,7 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
 <!-- HEADER -->
 <div class="header-bar">
   <div class="header-user">
-    <div class="header-avatar" id="hAvatar">—</div>
+    <div class="header-avatar" id="hAvatar" onclick="handleAvatarClick()">—</div>
     <div class="header-username" id="hName">—</div>
   </div>
   <div class="header-right">
@@ -513,8 +545,34 @@ html,body{width:100%;height:100%;background:var(--bg);overflow:hidden;font-famil
   </div><!-- end panel-body -->
   <div class="panel-footer">
     <button class="save-btn" onclick="saveSettings()">Save changes</button>
+    <button class="save-btn" id="signOutBtn" onclick="doSignOut();togglePanel('settingsPanel')" style="display:none;margin-top:8px;background:transparent;border-color:rgba(255,80,80,.3);color:rgba(255,120,120,.7);">Sign out</button>
   </div>
 </div><!-- end settingsPanel -->
+
+<!-- AUTH MODAL -->
+<div id="authModal" class="auth-modal">
+  <div class="auth-card">
+    <div class="auth-logo">◈ ember</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignin" onclick="switchAuthTab('signin')">sign in</button>
+      <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">create account</button>
+    </div>
+    <div id="authSignin" class="auth-form">
+      <input class="auth-input" id="authEmail" type="email" placeholder="email" autocomplete="email">
+      <input class="auth-input" id="authPass" type="password" placeholder="password" autocomplete="current-password">
+      <div class="auth-error" id="authErr"></div>
+      <button class="auth-btn" onclick="doSignIn()">sign in</button>
+    </div>
+    <div id="authSignup" class="auth-form" style="display:none">
+      <input class="auth-input" id="authEmail2" type="email" placeholder="email" autocomplete="email">
+      <input class="auth-input" id="authPass2" type="password" placeholder="password (6+ chars)" autocomplete="new-password">
+      <div class="auth-error" id="authErr2"></div>
+      <button class="auth-btn" onclick="doSignUp()">create account</button>
+    </div>
+    <div class="auth-divider">— or —</div>
+    <button class="auth-guest" onclick="closeAuthModal()">continue as guest →</button>
+  </div>
+</div>
 
 <!-- MEMORY PANEL -->
 <div class="panel" id="memoryPanel">
@@ -553,6 +611,21 @@ async function loadConfig(){
 }
 
 // ═══════════════════════════════════════════════════════
+// FIREBASE AUTH + FIRESTORE
+// ═══════════════════════════════════════════════════════
+firebase.initializeApp({
+  apiKey:'AIzaSyBf8Dttg5JDsFlwhlvv5dlMUxhs4cGqbLg',
+  authDomain:'secondlook-b8d51.firebaseapp.com',
+  projectId:'secondlook-b8d51',
+  storageBucket:'secondlook-b8d51.firebasestorage.app',
+  messagingSenderId:'87839748595',
+  appId:'1:87839748595:web:d4f2cdc23f9300f8ca2286'
+});
+const fbAuth=firebase.auth();
+const fbDb=firebase.firestore();
+let fbUser=null;
+
+// ═══════════════════════════════════════════════════════
 // Key resolution
 // ═══════════════════════════════════════════════════════
 function getClaudeKey(){ return EMBER_CONFIG.ANTHROPIC_KEY || P.claudeKey?.trim(); }
@@ -566,8 +639,47 @@ const DEF={userName:'',companionName:'Ember',model:'claude',tone:'warm',listenMo
   claudeKey:'',googleKey:'',googleVoice:'en-US-Neural2-F',elevenKey:'',elevenVoiceId:'',openaiKey:'',geminiKey:'',
   ttsEngine:'google',topics:[],onboarded:false,visitCount:0,lastVisit:null,history:[]};
 function loadP(){try{const r=localStorage.getItem(SK);return r?{...DEF,...JSON.parse(r)}:{...DEF};}catch{return{...DEF};}}
-function saveP(){localStorage.setItem(SK,JSON.stringify(P));}
+let _fsTimer=null;
+function saveP(){
+  localStorage.setItem(SK,JSON.stringify(P));
+  if(fbUser){clearTimeout(_fsTimer);_fsTimer=setTimeout(saveToFirestore,1200);}
+}
 let P=loadP();
+
+async function loadFirestoreProfile(uid){
+  try{
+    const doc=await fbDb.collection('users').doc(uid).get();
+    if(doc.exists){
+      // Merge cloud data into P — BYOK keys stay local only
+      const {claudeKey,googleKey,elevenKey,openaiKey,geminiKey,history,...safe}=doc.data();
+      P={...P,...safe};
+      localStorage.setItem(SK,JSON.stringify(P));
+    }
+  }catch(e){console.warn('Firestore load:',e);}
+}
+async function saveToFirestore(){
+  if(!fbUser)return;
+  // Never sync BYOK keys or history to Firestore
+  const {claudeKey,googleKey,elevenKey,openaiKey,geminiKey,history,...safe}=P;
+  try{
+    await fbDb.collection('users').doc(fbUser.uid).set(
+      {...safe,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},
+      {merge:true}
+    );
+  }catch(e){console.warn('Firestore save:',e);}
+}
+
+// Auth state — fires on boot and on sign-in/sign-out
+fbAuth.onAuthStateChanged(async user=>{
+  fbUser=user;
+  if(user){
+    await loadFirestoreProfile(user.uid);
+    updateAuthUI(user);
+    updateUI();
+  } else {
+    updateAuthUI(null);
+  }
+});
 
 // ═══════════════════════════════════════════════════════
 // SVG EYE MORPH SYSTEM — squirrel-eye anatomy
@@ -1032,8 +1144,26 @@ function startAlways(){
   };loop();
 }
 
+// ═══════════════════════════════════════════════════════
+// GUEST USAGE GATE
+// Signed-in users pass freely. Server-side limits in Phase 2.
+// ═══════════════════════════════════════════════════════
+const GUEST_LIMIT=10;
+function _usageKey(){return'ember_usage_'+new Date().toISOString().slice(0,10);}
+function getGuestCount(){return parseInt(localStorage.getItem(_usageKey())||'0',10);}
+function bumpGuestCount(){const k=_usageKey();localStorage.setItem(k,getGuestCount()+1);}
+function checkUsageGate(){
+  if(fbUser)return true;
+  return getGuestCount()<GUEST_LIMIT;
+}
+
 async function handleText(text){
   if(!text.trim())return;
+  if(!checkUsageGate()){
+    const msg="You've used your free messages for today. Create an account to keep going — it only takes a second.";
+    setState('idle');flash(msg,5500);speakBrowser(msg);showAuthModal();return;
+  }
+  if(!fbUser)bumpGuestCount();
   showWave(false);showBubble(text);setState('thinking');
   P.history=P.history||[];P.history.push({role:'user',content:text});
   if(P.history.length>20)P.history=P.history.slice(-20);
@@ -1303,10 +1433,65 @@ function buildPts(){const c=document.getElementById('particles');
     c.appendChild(p);}}
 
 // ═══════════════════════════════════════════════════════
+// AUTH UI
+// ═══════════════════════════════════════════════════════
+function showAuthModal(){document.getElementById('authModal').classList.add('open');}
+function closeAuthModal(){document.getElementById('authModal').classList.remove('open');}
+function handleAvatarClick(){fbUser?flash(fbUser.email):showAuthModal();}
+function switchAuthTab(t){
+  document.getElementById('tabSignin').classList.toggle('active',t==='signin');
+  document.getElementById('tabSignup').classList.toggle('active',t==='signup');
+  document.getElementById('authSignin').style.display=t==='signin'?'flex':'none';
+  document.getElementById('authSignup').style.display=t==='signup'?'flex':'none';
+}
+function _fbErrMsg(code){
+  return({'auth/user-not-found':'No account with that email.',
+    'auth/wrong-password':'Incorrect password.',
+    'auth/invalid-credential':'Incorrect email or password.',
+    'auth/email-already-in-use':'That email is already registered.',
+    'auth/weak-password':'Password must be at least 6 characters.',
+    'auth/invalid-email':'Enter a valid email address.'})[code]||'Something went wrong. Try again.';
+}
+async function doSignIn(){
+  const email=document.getElementById('authEmail').value.trim();
+  const pass=document.getElementById('authPass').value;
+  document.getElementById('authErr').textContent='';
+  try{await fbAuth.signInWithEmailAndPassword(email,pass);closeAuthModal();}
+  catch(e){document.getElementById('authErr').textContent=_fbErrMsg(e.code);}
+}
+async function doSignUp(){
+  const email=document.getElementById('authEmail2').value.trim();
+  const pass=document.getElementById('authPass2').value;
+  document.getElementById('authErr2').textContent='';
+  try{await fbAuth.createUserWithEmailAndPassword(email,pass);closeAuthModal();}
+  catch(e){document.getElementById('authErr2').textContent=_fbErrMsg(e.code);}
+}
+async function doSignOut(){
+  await fbAuth.signOut();
+  flash('Signed out ✦');
+}
+function updateAuthUI(user){
+  const av=document.getElementById('hAvatar');
+  const nm=document.getElementById('hName');
+  const soBtn=document.getElementById('signOutBtn');
+  if(user){
+    av.textContent=(user.email||'?')[0].toUpperCase();
+    av.style.background='radial-gradient(circle at 40% 38%,rgba(0,200,210,.3),rgba(0,60,80,.6))';
+    nm.textContent=P.userName||user.email.split('@')[0];
+    if(soBtn)soBtn.style.display='block';
+  } else {
+    av.textContent='—';
+    av.style.background='';
+    nm.textContent='—';
+    if(soBtn)soBtn.style.display='none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
 // COWORK postMessage API
 // ═══════════════════════════════════════════════════════
 window.addEventListener('message',e=>{const d=e.data;if(!d||d.ember!=='setState')return;if(SL[d.value])setState(d.value);if(d.greeting)flash(d.greeting);if(d.speak)speakText(d.speak);if(d.expression)doExpression(d.expression);});
-window.emberAPI={setState,flash,speakText,doExpression,getProfile:()=>({...P})};
+window.emberAPI={setState,flash,speakText,doExpression,getProfile:()=>({...P}),getIdToken:()=>fbUser?.getIdToken()};
 
 // ═══════════════════════════════════════════════════════
 // PWA — Register service worker
